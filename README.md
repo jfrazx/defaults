@@ -171,12 +171,12 @@ const charCount = Defaults.wrap({
 
 const sentence = 'something wicked this way comes';
 
-// (using Defaults) do this
+// do this (using Defaults)
 for (const char of sentence) {
   charCount[char]++;
 }
 
-// (without Defaults) instead of this
+// instead of this (without Defaults)
 for (const char of sentence) {
   if (!(char in charCount)) {
     charCount[char] = 0;

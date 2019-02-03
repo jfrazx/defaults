@@ -27,12 +27,8 @@ export class Defaults<T extends object = {}, TValue = any>
   }
 
   get(target: T, event: Property): TValue {
-    const value = Reflect.get(target, event);
-    const isUndefined = value === undefined;
-
-    this.setIfNeeded(target, event, isUndefined);
-
-    return isUndefined ? this.supplyDefault() : value;
+    const { useDefault, useValue } = this.useValue(target, event);
+    return useDefault ? this.supplyDefault() : useValue;
   }
 
   set(target: T, property: Property, value: TValue) {
@@ -44,10 +40,24 @@ export class Defaults<T extends object = {}, TValue = any>
     return Reflect.set(target, property, useValue);
   }
 
-  private setIfNeeded(target: T, event: Property, isUndef: boolean): void {
+  private useValue(target: T, event: Property) {
+    const value = Reflect.get(target, event);
+    const isUndefined = value === undefined;
+    const didSet = this.setIfNeeded(target, event, isUndefined);
+    const useDefault = isUndefined && !didSet;
+
+    return {
+      useDefault,
+      useValue: didSet ? Reflect.get(target, event) : value,
+    };
+  }
+
+  private setIfNeeded(target: T, event: Property, isUndef: boolean): boolean {
     if (this.shouldSetUndefined(isUndef)) {
-      Reflect.set(target, event, this.supplyDefault());
+      return Reflect.set(target, event, this.supplyDefault());
     }
+
+    return false;
   }
 
   private shouldSetUndefined(isUndef: boolean): boolean {

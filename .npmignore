@@ -11,6 +11,7 @@ tslint.json
 .prettierrc
 .releaserc
 .nycrc.json
+*.lcov
 yarn.lock
 
 .nyc_output/

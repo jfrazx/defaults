@@ -94,6 +94,42 @@ describe('Defaults', () => {
 
       expect(prop in d).to.be.false;
     });
+
+    it('should set and continue using a default array', () => {
+      const content = 'this is some default content';
+      const d: any = Defaults.wrap({ defaultValue: [], setUndefined: true });
+
+      expect(d.stuff.push(content)).to.equal(1);
+      expect(d.stuff.push(content)).to.equal(2);
+      expect(d.stuff).to.have.lengthOf(2);
+    });
+
+    it('should set and continue using a default object', () => {
+      const sym1 = Symbol('one');
+      const sym2 = Symbol('two');
+      const defaultValue = {
+        [sym1]: [],
+        [sym2]: [],
+        point: {
+          lat: 23.324,
+          long: 65.332,
+        },
+      };
+      const d: any = Defaults.wrap({ defaultValue, setUndefined: true });
+      const { event } = d;
+
+      expect(d.event[sym1].push(sym1)).to.equal(1);
+      expect(d.event[sym1].push(sym2)).to.equal(2);
+      expect(d.event[sym2].push(sym1)).to.equal(1);
+      expect(d.event[sym2].push(sym2)).to.equal(2);
+
+      expect(event).to.equal(d.event);
+      expect(event[sym1]).to.equal(d.event[sym1]);
+      expect(event[sym2]).to.equal(d.event[sym2]);
+
+      expect(d.event[sym1]).to.have.lengthOf(2);
+      expect(d.event[sym2]).to.have.lengthOf(2);
+    });
   });
 
   describe('shallowCopy', () => {
