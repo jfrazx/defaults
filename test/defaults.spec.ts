@@ -146,5 +146,29 @@ describe('Defaults', () => {
       expect(complex.route1).to.not.equal(complex.route2);
       expect(complex.route1.point).to.not.equal(complex.route2.point);
     });
+
+    it('should deep clone nested objects with symbols', () => {
+      const sym1 = Symbol('one');
+      const sym2 = Symbol('two');
+      const defaultValue = {
+        [sym1]: [],
+        [sym2]: [],
+        point: {
+          lat: 23.324,
+          long: 65.332,
+        },
+      };
+
+      const complex: any = Defaults.wrap({
+        defaultValue: defaultValue,
+        setUndefined: true,
+        shallowCopy: false,
+      });
+
+      expect(complex.any).to.not.equal(defaultValue);
+      expect(complex.any[sym1]).to.not.equal(defaultValue[sym1]);
+      expect(complex.any[sym2]).to.not.equal(defaultValue[sym2]);
+      expect(complex.any.point).to.not.equal(defaultValue.point);
+    });
   });
 });

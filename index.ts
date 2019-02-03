@@ -105,7 +105,13 @@ export class Defaults<T extends object = {}, TValue = any>
   }
 
   private reduceObject(object: TValue): TValue {
-    return Object.entries(object).reduce((obj, [key, value]) => {
+    return [
+      ...Object.entries(object),
+      ...Object.getOwnPropertySymbols(object).map(symbol => [
+        symbol,
+        (<any>object)[symbol],
+      ]),
+    ].reduce((obj, [key, value]) => {
       return {
         ...obj,
         [key]: this.supplyDefault(value),

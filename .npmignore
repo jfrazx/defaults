@@ -10,6 +10,8 @@ tslint.json
 .travis.yml
 .prettierrc
 .releaserc
+.nycrc.json
+yarn.lock
 
 .nyc_output/
 
