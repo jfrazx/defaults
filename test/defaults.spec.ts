@@ -1,4 +1,4 @@
-import { Defaults } from '../index';
+import { wrapDefaults, Defaults } from '../index';
 import { expect } from 'chai';
 
 describe('Defaults', () => {
@@ -11,7 +11,12 @@ describe('Defaults', () => {
     });
 
     it('should supply undefined as a default value', () => {
-      const d: any = Defaults.wrap();
+      let d: any = Defaults.wrap();
+
+      expect(d).to.be.an('object');
+      expect(d.value).to.be.undefined;
+
+      d = wrapDefaults();
 
       expect(d).to.be.an('object');
       expect(d.value).to.be.undefined;
@@ -21,13 +26,13 @@ describe('Defaults', () => {
       let d: any = Defaults.wrap({ defaultValue: 10 });
       expect(d.value).to.equal(10);
 
-      d = Defaults.wrap({ defaultValue: 'string default content' });
+      d = wrapDefaults({ defaultValue: 'string default content' });
       expect(d.value).to.equal('string default content');
 
-      d = Defaults.wrap({ defaultValue: [] });
+      d = wrapDefaults({ defaultValue: [] });
       expect(d.value).to.be.an('array');
 
-      d = Defaults.wrap({ defaultValue: {} });
+      d = wrapDefaults({ defaultValue: {} });
       expect(d.value).to.be.an('object');
     });
   });
@@ -36,7 +41,7 @@ describe('Defaults', () => {
     it('should receive the value, property and unwrapped object', () => {
       const unwrapped = {};
       const setValue = 10;
-      const defaults: any = Defaults.wrap({
+      const defaults: any = wrapDefaults({
         wrap: unwrapped,
         defaultValue: 0,
         setCriteria: (value, property, object) => {
@@ -52,13 +57,13 @@ describe('Defaults', () => {
     });
 
     it('should allow criteria to determine value used', () => {
-      let d: any = Defaults.wrap({ defaultValue: 0 });
+      let d: any = wrapDefaults({ defaultValue: 0 });
 
       d.value = -999;
 
       expect(d.value).to.equal(-999);
 
-      d = Defaults.wrap({ defaultValue: 0, setCriteria: v => v < 0 });
+      d = wrapDefaults({ defaultValue: 0, setCriteria: v => v < 0 });
 
       d.value = -999;
 
@@ -66,7 +71,7 @@ describe('Defaults', () => {
     });
 
     it('should allow defined criteria to be ignored', () => {
-      let d: any = Defaults.wrap({ defaultValue: 0, setCriteria: v => v < 0 });
+      let d: any = wrapDefaults({ defaultValue: 0, setCriteria: v => v < 0 });
 
       d.value = { ignoreDefaultCriteria: true, value: -10 };
 
@@ -76,20 +81,20 @@ describe('Defaults', () => {
 
   describe('setUndefined', () => {
     it('should set default values for undefined', () => {
-      let d: any = Defaults.wrap({ defaultValue: 0 });
+      let d: any = wrapDefaults({ defaultValue: 0 });
       const prop = 'value';
 
       expect(d.value).to.equal(0);
       expect(prop in d).to.be.false;
 
-      d = Defaults.wrap({ defaultValue: 0, setUndefined: true });
+      d = wrapDefaults({ defaultValue: 0, setUndefined: true });
 
       expect(d.value).to.equal(0);
       expect(prop in d).to.be.true;
     });
 
     it('should not have a property which has not been accessed', () => {
-      const d = Defaults.wrap({ defaultValue: 0, setUndefined: true });
+      const d = wrapDefaults({ defaultValue: 0, setUndefined: true });
       const prop = 'value';
 
       expect(prop in d).to.be.false;
@@ -97,7 +102,7 @@ describe('Defaults', () => {
 
     it('should set and continue using a default array', () => {
       const content = 'this is some default content';
-      const d: any = Defaults.wrap({ defaultValue: [], setUndefined: true });
+      const d: any = wrapDefaults({ defaultValue: [], setUndefined: true });
 
       expect(d.stuff.push(content)).to.equal(1);
       expect(d.stuff.push(content)).to.equal(2);
@@ -115,7 +120,7 @@ describe('Defaults', () => {
           long: 65.332,
         },
       };
-      const d: any = Defaults.wrap({ defaultValue, setUndefined: true });
+      const d: any = wrapDefaults({ defaultValue, setUndefined: true });
       const { event } = d;
 
       expect(d.event[sym1].push(sym1)).to.equal(1);
@@ -134,7 +139,7 @@ describe('Defaults', () => {
 
   describe('shallowCopy', () => {
     it('should create shallow copies by default', () => {
-      let complex: any = Defaults.wrap({
+      let complex: any = wrapDefaults({
         defaultValue: [[2.345, 43.53]],
         setUndefined: true,
       });
@@ -142,7 +147,7 @@ describe('Defaults', () => {
       expect(complex.point1).to.not.equal(complex.point2);
       expect(complex.point1[0]).to.equal(complex.point2[0]);
 
-      complex = Defaults.wrap({
+      complex = wrapDefaults({
         defaultValue: {
           point: {
             lat: 23.324,
@@ -157,7 +162,7 @@ describe('Defaults', () => {
     });
 
     it('should deep clone nested arrays', () => {
-      const complex: any = Defaults.wrap({
+      const complex: any = wrapDefaults({
         defaultValue: [[2.345, 43.53]],
         setUndefined: true,
         shallowCopy: false,
@@ -168,7 +173,7 @@ describe('Defaults', () => {
     });
 
     it('should deep clone nested objects', () => {
-      const complex: any = Defaults.wrap({
+      const complex: any = wrapDefaults({
         defaultValue: {
           point: {
             lat: 23.324,
@@ -195,7 +200,7 @@ describe('Defaults', () => {
         },
       };
 
-      const complex: any = Defaults.wrap({
+      const complex: any = wrapDefaults({
         defaultValue: defaultValue,
         setUndefined: true,
         shallowCopy: false,
@@ -205,6 +210,19 @@ describe('Defaults', () => {
       expect(complex.any[sym1]).to.not.equal(defaultValue[sym1]);
       expect(complex.any[sym2]).to.not.equal(defaultValue[sym2]);
       expect(complex.any.point).to.not.equal(defaultValue.point);
+    });
+  });
+
+  describe('unwrapDefaults', () => {
+    it('should return the unwrapped object', () => {
+      class Person {}
+
+      const person = new Person();
+      const defaults = wrapDefaults({ wrap: person });
+      const unwrapped = defaults.unwrapDefaults();
+
+      expect(person).to.not.equal(defaults);
+      expect(unwrapped).to.equal(person);
     });
   });
 });

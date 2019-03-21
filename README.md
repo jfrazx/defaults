@@ -1,5 +1,9 @@
 # Defaults
 
+![npm (scoped)](https://img.shields.io/npm/v/@status/defaults.svg?style=plastic)
+![GitHub](https://img.shields.io/github/license/jfrazx/defaults.svg?style=plastic)
+![Travis (.org)](https://img.shields.io/travis/jfrazx/defaults.svg?style=plastic)
+
 Supply default values for JavaScript Objects using ES2015 Proxy.
 
 ---
@@ -41,8 +45,7 @@ const wrapped = new Proxy(
 
 wrapped.belowZero = -35;
 
-console.log(wrapped.belowZero);
-// => 0
+expect(wrapped.belowZero).to.equal(0);
 ```
 
 Be aware that while defaults are supplied for undefined values they are not set. This behavior can be modified.
@@ -58,8 +61,7 @@ const wrapped = new Proxy(
   })
 );
 
-console.log(wrapped.notThere);
-// => 0;
+expect(wrapped.notThere).to.equal(0);
 ```
 
 Using complex content as a default is possible, but only shallow copies are made.
@@ -73,11 +75,8 @@ const complex = new Proxy(
   })
 );
 
-complex.point1 === complex.point2;
-// => false
-
-complex.point1[0] === complex.point2[0];
-// => true
+expect(complex.point1).to.not.equal(complex.point2);
+expect(complex.point1[0]).to.equal(complex.point2[0]);
 ```
 
 This can be changed by passing `shallowCopy` as `false`. ShallowCopy has no effect when using primitive values.
@@ -92,11 +91,8 @@ const complex = new Proxy(
   })
 );
 
-complex.point1 === complex.point2;
-// => false
-
-complex.point1[0] === complex.point2[0];
-// => false
+expect(complex.point1).to.not.equal(complex.point2);
+expect(complex.point1[0]).to.not.equal(complex.point2[0]);
 ```
 
 For convenience, Defaults has a static `wrap` method.
@@ -111,6 +107,35 @@ const wrapped = Defaults.wrap({
   setUndefined: true,
   setCriteria: v => v < 0,
 });
+```
+
+Or a `wrapDefaults` helper function:
+
+```typescript
+import { wrapDefaults } from '@status/defaults';
+
+const wrapped = wrapDefaults({
+  wrap: myObject,
+  defaultValue: 0,
+  shallowCopy: false,
+  setUndefined: true,
+  setCriteria: v => v < 0,
+});
+```
+
+Using either static `wrap` or `wrapDefaults` helper will add a type for `unwrapDefaults` method, which, when invoked, returns the original unwrapped object.
+
+```typescript
+import { wrapDefaults } from '@status/defaults';
+
+class Person {}
+
+const person = new Person();
+const defaults = wrapDefaults({ wrap: person });
+const unwrapped = defaults.unwrapDefaults();
+
+expect(person).to.not.equal(defaults);
+expect(unwrapped).to.equal(person);
 ```
 
 ---
@@ -153,8 +178,7 @@ Determining if a property exists on an object is unaffected when using `Defaults
 const wrapped = Defaults.wrap({ defaultValue: [], setUndefined: true });
 const prop = 'prop';
 
-console.log(prop in wrapped);
-// => false
+expect(prop in wrapped).to.be.false;
 ```
 
 ---

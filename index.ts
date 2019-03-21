@@ -21,12 +21,21 @@ export class Defaults<T extends object = {}, TValue = any>
 
   static wrap<T extends object = {}, TValue = any>(
     defaultOptions: DefaultOptions<T, TValue> = {}
-  ) {
+  ): Default<T> {
     const { wrap = {} } = defaultOptions;
-    return new Proxy(wrap, new Defaults<T, TValue>(defaultOptions));
+    return new Proxy(wrap, new Defaults<T, TValue>(defaultOptions)) as Default<
+      T
+    >;
+  }
+
+  unwrapDefaults(target: T): T {
+    return target;
   }
 
   get(target: T, event: Property): TValue {
+    if ((event as string) === 'unwrapDefaults') {
+      return this.unwrapDefaults.bind(this, target) as any;
+    }
     const { useDefault, useValue } = this.useValue(target, event);
     return useDefault ? this.supplyDefault() : useValue;
   }
@@ -132,6 +141,18 @@ export class Defaults<T extends object = {}, TValue = any>
   private isObject(value: any): value is object {
     return value && Array.isArray(value) === false && typeof value === 'object';
   }
+}
+
+export function wrapDefaults<T extends object = {}, TValue = any>(
+  defaultOptions: DefaultOptions<T, TValue> = {}
+) {
+  return Defaults.wrap(defaultOptions);
+}
+
+export type Default<T extends object = {}> = T & Unwrap<T>;
+
+export interface Unwrap<T> {
+  unwrapDefaults(): T;
 }
 
 export interface IgnoreCriteria<TValue = any> {
