@@ -138,6 +138,25 @@ expect(person).to.not.equal(defaults);
 expect(unwrapped).to.equal(person);
 ```
 
+Defaults can also wrap arrays.
+
+```typescript
+import { wrapDefaults } from '@status/defaults';
+
+const array = wrapDefaults({
+  wrap: [] as number[],
+  defaultValue: 7,
+  setCriteria: v => v < 7,
+  setUndefined: true,
+});
+
+expect(array[0]).to.equal(7);
+
+array.push(1);
+
+expect(array[1]).to.equal(7);
+```
+
 ---
 
 ## `Defaults` defaults

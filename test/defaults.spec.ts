@@ -213,6 +213,95 @@ describe('Defaults', () => {
     });
   });
 
+  describe('arrays', () => {
+    it('should supply default values', () => {
+      const a = wrapDefaults<number[], number>({
+        wrap: [],
+        defaultValue: 7,
+      });
+
+      expect(a[0]).to.equal(7);
+      expect(a.length).to.equal(0);
+    });
+
+    it('should set undefined', () => {
+      const a = wrapDefaults<number[], number>({
+        wrap: [],
+        defaultValue: 7,
+        setUndefined: true,
+      });
+
+      expect(a[0]).to.equal(7);
+      expect(a.length).to.equal(1);
+    });
+
+    it('should use setCriteria', () => {
+      const a = wrapDefaults({
+        wrap: [] as number[],
+        defaultValue: 4,
+        setCriteria: v => v > 10,
+      });
+
+      a[0] = 11;
+      a[1] = -9;
+      expect(a[0]).to.equal(4);
+      expect(a[1]).to.equal(-9);
+      expect(a.length).to.equal(2);
+    });
+
+    it('should handle push', () => {
+      const a = wrapDefaults({
+        wrap: [] as number[],
+        defaultValue: 4,
+        setCriteria: v => v > 10,
+      });
+
+      a.push(45);
+      expect(a[0]).to.equal(4);
+      expect(a.length).to.equal(1);
+    });
+
+    it.skip('should handle pop', () => {
+      const a = wrapDefaults({
+        wrap: [] as number[],
+        defaultValue: 4,
+        setUndefined: true,
+      });
+
+      expect(a.length).to.equal(0);
+
+      const pop = a.pop();
+
+      expect(pop).to.equal(4);
+      expect(a.length).to.equal(0);
+    });
+
+    it('should handle unshift', () => {
+      const a = wrapDefaults({
+        wrap: [1, 2, 3, 4, 5],
+        defaultValue: 4,
+        setCriteria: v => v > 10,
+      });
+
+      a.unshift(45);
+
+      expect(a[0]).to.equal(4);
+      expect(a.length).to.equal(6);
+    });
+
+    it('should ignore length', () => {
+      const a = wrapDefaults({
+        wrap: [1, 2, 3, 4, 5],
+        defaultValue: 4,
+        setCriteria: v => v > 10,
+      });
+
+      a.length = 45;
+
+      expect(a.length).to.equal(45);
+    });
+  });
+
   describe('unwrapDefaults', () => {
     it('should return the unwrapped object', () => {
       class Person {}
@@ -223,6 +312,15 @@ describe('Defaults', () => {
 
       expect(person).to.not.equal(defaults);
       expect(unwrapped).to.equal(person);
+    });
+
+    it('should return the unwrapped array', () => {
+      const a: any[] = [];
+      const defaults = wrapDefaults({ wrap: a });
+      const unwrapped = defaults.unwrapDefaults();
+
+      expect(a).to.not.equal(defaults);
+      expect(unwrapped).to.equal(a);
     });
   });
 });

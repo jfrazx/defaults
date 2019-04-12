@@ -41,12 +41,30 @@ export class Defaults<T extends object = {}, TValue = any>
   }
 
   set(target: T, property: Property, value: TValue) {
-    const { criteria, setValue } = this.useCriteria(value);
+    const { criteria, setValue } = this.determineCriteria(
+      target,
+      property,
+      value
+    );
     const useValue = criteria.call(target, setValue, property, target)
       ? this.supplyDefault()
       : setValue;
 
     return Reflect.set(target, property, useValue);
+  }
+
+  private determineCriteria(target: T, property: Property, value: TValue) {
+    const { criteria: setCriteria, setValue } = this.useCriteria(value);
+    const isArrayLength = this.isArrayLength(target, property);
+
+    return {
+      criteria: isArrayLength ? criteria : setCriteria,
+      setValue,
+    };
+  }
+
+  private isArrayLength(target: T, property: Property): boolean {
+    return Array.isArray(target) && property === 'length';
   }
 
   private useValue(target: T, event: Property) {
@@ -161,10 +179,43 @@ export interface IgnoreCriteria<TValue = any> {
 }
 
 export interface DefaultOptions<T extends object = {}, TValue = any> {
+  /**
+   * Function to determine if default value should be used. Returning a truthy value supplies the default
+   *
+   * @default
+   * () => false;
+   */
   setCriteria?: Criteria<T, TValue>;
+  /**
+   * The object or array which to supply default values
+   *
+   * @default
+   * {}
+   */
   wrap?: T;
+
+  /**
+   * The default value to be supplied
+   *
+   * @default
+   * undefined
+   * */
   defaultValue?: TValue;
+
+  /**
+   * Set a default value if undefined
+   *
+   * @default
+   * false
+   */
   setUndefined?: boolean;
+
+  /**
+   * If default is array or object, make a shallow copy when supplying the default
+   *
+   * @default
+   * true
+   */
   shallowCopy?: boolean;
 }
 
