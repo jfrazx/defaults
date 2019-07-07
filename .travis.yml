@@ -15,8 +15,8 @@ script:
   - npm run coverage:test
   - npm run coverage:check
   - npm run coverage:report
-  - npm run coverage:post
   - npm run compile
+  - npm run coverage:post
 deploy:
   provider: script
   skip_cleanup: true
