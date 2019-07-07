@@ -13,10 +13,11 @@ tslint.json
 .nycrc.json
 *.lcov
 yarn.lock
+mocha.opts
 
 .nyc_output/
 
-!index.d.ts
+!*.d.ts
 
 typings/
 node_modules/

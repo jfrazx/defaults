@@ -1,4 +1,4 @@
-import { wrapDefaults, Defaults } from '../index';
+import { wrapDefaults, Defaults } from '../src/index';
 import { expect } from 'chai';
 
 describe('Defaults', () => {
@@ -261,7 +261,7 @@ describe('Defaults', () => {
       expect(a.length).to.equal(1);
     });
 
-    it.skip('should handle pop', () => {
+    it('should handle pop', () => {
       const a = wrapDefaults({
         wrap: [] as number[],
         defaultValue: 4,
@@ -273,6 +273,21 @@ describe('Defaults', () => {
       const pop = a.pop();
 
       expect(pop).to.equal(4);
+      expect(a.length).to.equal(0);
+    });
+
+    it('should handle shift', () => {
+      const a = wrapDefaults({
+        wrap: [] as number[],
+        defaultValue: 4,
+        setUndefined: true,
+      });
+
+      expect(a.length).to.equal(0);
+
+      const shift = a.shift();
+
+      expect(shift).to.equal(4);
       expect(a.length).to.equal(0);
     });
 
@@ -299,6 +314,24 @@ describe('Defaults', () => {
       a.length = 45;
 
       expect(a.length).to.equal(45);
+    });
+
+    it('should supply an array', () => {
+      const a = wrapDefaults({
+        wrap: [[1], [2], [3], [4], [5]],
+        defaultValue: [10],
+        setCriteria: v => v && v.length === 0,
+      });
+
+      a.push([]);
+
+      const last = a[a.length - 1];
+
+      expect(a.length).to.equal(6);
+      expect(last).to.be.an('array');
+      expect(last[0]).to.equal(10);
+      expect(a[50]).to.be.an('array');
+      expect(a[50][0]).to.be.equal(10);
     });
   });
 
