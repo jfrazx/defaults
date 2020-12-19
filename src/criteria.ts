@@ -1,3 +1,3 @@
 import { Criteria } from './interfaces';
 
-export const criteria: Criteria = () => false;
+export const criteria: Criteria<object> = () => false;

@@ -2,10 +2,10 @@ import { isFunction, isUndefined } from './helpers';
 import { Property } from './interfaces';
 import { Defaults } from './defaults';
 
-export class DefaultsArray<
-  T extends object = {},
-  TValue = any
-> extends Defaults<T, TValue> {
+export class DefaultsArray<T extends object = {}, TValue = any> extends Defaults<
+  T,
+  TValue
+> {
   get(target: T, event: Property, receiver?: T): TValue {
     const original = Reflect.get(target, event);
     if (!this.isShiftPop(event) || !isFunction(original)) {
@@ -15,7 +15,7 @@ export class DefaultsArray<
     return this.handle.bind(this, receiver, original) as any;
   }
 
-  private handle(target: T, original: Function, ...args: any): TValue {
+  private handle(target: T, original: Function, ...args: unknown[]): TValue {
     const result: any = original.apply(target, args);
 
     return isUndefined(result) ? this.supplyDefault() : result;

@@ -1,10 +1,10 @@
 import { Defaults } from './defaults';
 import { isObject } from './helpers';
 
-export class DefaultsComplex<
-  T extends object = {},
-  TValue = any
-> extends Defaults<T, TValue> {
+export class DefaultsComplex<T extends object, TValue = unknown> extends Defaults<
+  T,
+  TValue
+> {
   private arrayClone(array: any): TValue {
     return this.shallowCopy
       ? (([...array] as unknown) as TValue)
@@ -29,7 +29,7 @@ export class DefaultsComplex<
   private reduceObject(object: TValue): TValue {
     return [
       ...Object.entries(object),
-      ...Object.getOwnPropertySymbols(object).map(symbol => [
+      ...Object.getOwnPropertySymbols(object).map((symbol) => [
         symbol,
         (<any>object)[symbol],
       ]),

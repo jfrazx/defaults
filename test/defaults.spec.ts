@@ -1,4 +1,4 @@
-import { wrapDefaults, Defaults } from '../src/index';
+import { wrapDefaults, Defaults } from '../src';
 import { expect } from 'chai';
 
 describe('Defaults', () => {
@@ -63,7 +63,7 @@ describe('Defaults', () => {
 
       expect(d.value).to.equal(-999);
 
-      d = wrapDefaults({ defaultValue: 0, setCriteria: v => v < 0 });
+      d = wrapDefaults({ defaultValue: 0, setCriteria: (v) => v < 0 });
 
       d.value = -999;
 
@@ -71,7 +71,10 @@ describe('Defaults', () => {
     });
 
     it('should allow defined criteria to be ignored', () => {
-      let d: any = wrapDefaults({ defaultValue: 0, setCriteria: v => v < 0 });
+      const d: any = wrapDefaults({
+        defaultValue: 0,
+        setCriteria: (v) => v < 0,
+      });
 
       d.value = { ignoreDefaultCriteria: true, value: -10 };
 
@@ -239,7 +242,7 @@ describe('Defaults', () => {
       const a = wrapDefaults({
         wrap: [] as number[],
         defaultValue: 4,
-        setCriteria: v => v > 10,
+        setCriteria: (v) => v > 10,
       });
 
       a[0] = 11;
@@ -253,7 +256,7 @@ describe('Defaults', () => {
       const a = wrapDefaults({
         wrap: [] as number[],
         defaultValue: 4,
-        setCriteria: v => v > 10,
+        setCriteria: (v) => v > 10,
       });
 
       a.push(45);
@@ -295,7 +298,7 @@ describe('Defaults', () => {
       const a = wrapDefaults({
         wrap: [1, 2, 3, 4, 5],
         defaultValue: 4,
-        setCriteria: v => v > 10,
+        setCriteria: (v) => v > 10,
       });
 
       a.unshift(45);
@@ -308,7 +311,7 @@ describe('Defaults', () => {
       const a = wrapDefaults({
         wrap: [1, 2, 3, 4, 5],
         defaultValue: 4,
-        setCriteria: v => v > 10,
+        setCriteria: (v) => v > 10,
       });
 
       a.length = 45;
@@ -320,7 +323,7 @@ describe('Defaults', () => {
       const a = wrapDefaults({
         wrap: [[1], [2], [3], [4], [5]],
         defaultValue: [10],
-        setCriteria: v => v && v.length === 0,
+        setCriteria: (v) => v && v.length === 0,
       });
 
       a.push([]);

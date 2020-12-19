@@ -1,1 +1,3 @@
-export * from './defaults-events';
+export enum DefaultsEvent {
+  Unwrap = 'unwrapDefaults',
+}

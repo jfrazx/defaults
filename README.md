@@ -4,7 +4,7 @@
 ![GitHub](https://img.shields.io/github/license/jfrazx/defaults.svg?style=plastic)
 ![Travis (.org)](https://img.shields.io/travis/jfrazx/defaults.svg?style=plastic)
 
-Supply default values for JavaScript Objects using ES2015 Proxy.
+Supply default values for JavaScript Objects.
 
 ---
 
@@ -20,12 +20,14 @@ or
 
 ## Usage
 
-You may invoke the Proxy yourself, passing `Defaults` as the handler.
+`Defaults` supplies a helper to wrap an object and provide default values.
 
 ```typescript
-import { Defaults } from '@status/defaults';
+import { wrapDefaults } from '@status/defaults';
 
-const wrapped = new Proxy(myObject, new Defaults());
+const wrapped = wrapDefaults({
+  wrap: myObject,
+});
 ```
 
 `Defaults` default is `undefined`, which makes it rather useless, so supplying your own default is a good idea.
@@ -33,15 +35,13 @@ const wrapped = new Proxy(myObject, new Defaults());
 Additionally, it accepts a function that can be used to determine if a default value should be used instead of the value being set. Returning `true`, or any truthy value, will result in your default value being set.
 
 ```typescript
-import { Defaults } from '@status/defaults';
+import { wrapDefaults } from '@status/defaults';
 
-const wrapped = new Proxy(
-  myObject,
-  new Defaults({
-    defaultValue: 0,
-    setCriteria: (value, _property, _myObject) => value < 0,
-  })
-);
+const wrapped = wrapDefaults({
+  wrap: myObject,
+  defaultValue: 0,
+  setCriteria: (value, _property, _myObject) => value < 0,
+});
 
 wrapped.belowZero = -35;
 
@@ -51,15 +51,12 @@ expect(wrapped.belowZero).to.equal(0);
 Be aware that while defaults are supplied for undefined values they are not set. This behavior can be modified.
 
 ```typescript
-import { Defaults } from '@status/defaults';
+import { wrapDefaults } from '@status/defaults';
 
-const wrapped = new Proxy(
-  {},
-  new Defaults({
-    defaultValue: 0,
-    setUndefined: true,
-  })
-);
+const wrapped = wrapDefaults({
+  defaultValue: 0,
+  setUndefined: true,
+});
 
 expect(wrapped.notThere).to.equal(0);
 ```
@@ -67,13 +64,10 @@ expect(wrapped.notThere).to.equal(0);
 Using complex content as a default is possible, but only shallow copies are made.
 
 ```typescript
-const complex = new Proxy(
-  {},
-  new Defaults({
-    defaultValue: [[2.345, 43.53]],
-    setUndefined: true,
-  })
-);
+const complex = wrapDefaults({
+  defaultValue: [[2.345, 43.53]],
+  setUndefined: true,
+});
 
 expect(complex.point1).to.not.equal(complex.point2);
 expect(complex.point1[0]).to.equal(complex.point2[0]);
@@ -82,48 +76,17 @@ expect(complex.point1[0]).to.equal(complex.point2[0]);
 This can be changed by passing `shallowCopy` as `false`. ShallowCopy has no effect when using primitive values.
 
 ```typescript
-const complex = new Proxy(
-  {},
-  new Defaults({
-    defaultValue: [[2.345, 43.53]],
-    setUndefined: true,
-    shallowCopy: false,
-  })
-);
+const complex = wrapDefaults({
+  defaultValue: [[2.345, 43.53]],
+  setUndefined: true,
+  shallowCopy: false,
+});
 
 expect(complex.point1).to.not.equal(complex.point2);
 expect(complex.point1[0]).to.not.equal(complex.point2[0]);
 ```
 
-For convenience, Defaults has a static `wrap` method.
-
-```typescript
-import { Defaults } from '@status/defaults';
-
-const wrapped = Defaults.wrap({
-  wrap: myObject,
-  defaultValue: 0,
-  shallowCopy: false,
-  setUndefined: true,
-  setCriteria: v => v < 0,
-});
-```
-
-Or a `wrapDefaults` helper function:
-
-```typescript
-import { wrapDefaults } from '@status/defaults';
-
-const wrapped = wrapDefaults({
-  wrap: myObject,
-  defaultValue: 0,
-  shallowCopy: false,
-  setUndefined: true,
-  setCriteria: v => v < 0,
-});
-```
-
-Using either static `wrap` or `wrapDefaults` helper will add a type for `unwrapDefaults` method, which, when invoked, returns the original unwrapped object.
+Using `wrapDefaults` helper will add a type for `unwrapDefaults` method, which, when invoked, returns the original unwrapped object.
 
 ```typescript
 import { wrapDefaults } from '@status/defaults';
@@ -146,7 +109,7 @@ import { wrapDefaults } from '@status/defaults';
 const array = wrapDefaults({
   wrap: [] as number[],
   defaultValue: 7,
-  setCriteria: v => v < 7,
+  setCriteria: (v) => v < 7,
   setUndefined: true,
 });
 
@@ -163,7 +126,7 @@ expect(array[1]).to.equal(7);
 
 All options have default values.
 
-- wrap: `{}`
+- wrap: `Object.create(null)`
 - shallowCopy: `true`
 - setUndefined: `false`
 - defaultValue: `undefined`
@@ -178,7 +141,7 @@ You may override your defined criteria should you _really_ need to set a value t
 ```typescript
 const aboveZero = Defaults.wrap({
   defaultValue: 0,
-  setCriteria: v => v < 0,
+  setCriteria: (v) => v < 0,
 });
 
 aboveZero.notAnymore = { ignoreDefaultCriteria: true, value: -345 };
@@ -209,7 +172,7 @@ import { Defaults } from '@status/defaults';
 
 const charCount = Defaults.wrap({
   defaultValue: 0,
-  setCriteria: v => v < 0,
+  setCriteria: (v) => v < 0,
 });
 
 const sentence = 'something wicked this way comes';
@@ -245,20 +208,5 @@ const myObj = Defaults.wrap({ defaultValue: [] });
 
 myObj.ifNotExistsWillStillHaveArray.forEach(...);
 ```
-
----
-
-## Caveats
-
-In a Node environment, if you enabled `setUndefined` and `console.log(myWrappedObject)` you will have additional properties due to this [bug](https://github.com/nodejs/node/issues/10731).
-
-```bash
-inspect
-[Symbol(nodejs.util.inspect.custom)]
-[Symbol(Symbol.toStringTag)]
-[Symbol(Symbol.iterator)]
-```
-
-As far as I'm aware this only happens when inspecting and is just something we'll have to ignore.
 
 ---

@@ -8,8 +8,11 @@
   "functions": 99,
   "branches": 87,
   "reporter": ["lcov", "text-summary", "html"],
-  "all": true,
-  "cache": true,
+  "all": false,
+  "cache": false,
   "report-dir": "./coverage",
-  "tmp-directory": ".nyc_output"
+  "tmp-directory": ".nyc_output",
+  "extension": [".ts", ".tsx"],
+  "require": ["ts-node/register", "source-map-support/register"],
+  "exclude": ["src/index.ts", "test/**/*", "coverage/**/*", "**/*.d.ts"]
 }

@@ -5,7 +5,7 @@
       "options": { "parser": "json" }
     }
   ],
-  "printWidth": 80,
+  "printWidth": 85,
   "singleQuote": true,
   "bracketSpacing": true,
   "trailingComma": "es5"

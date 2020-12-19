@@ -10,6 +10,7 @@ logs
 
 !examples/**/*
 dist/
+build/
 
 node_modules/
 .nyc_output/

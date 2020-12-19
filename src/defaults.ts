@@ -1,16 +1,16 @@
 import { isUndefined, isUnwrapDefaults, isObject } from './helpers';
-
 import { criteria } from './criteria';
 import {
   Default,
   Criteria,
   Property,
+  IDefaults,
+  CriteriaValue,
   DefaultOptions,
   IgnoreCriteria,
-  IDefaults,
 } from './interfaces';
 
-export class Defaults<T extends object = {}, TValue = any>
+export class Defaults<T extends object = {}, TValue = unknown>
   implements ProxyHandler<T>, IDefaults<T, TValue> {
   protected readonly defaultValue: TValue;
   protected readonly setCriteria: Criteria<T, TValue>;
@@ -48,12 +48,8 @@ export class Defaults<T extends object = {}, TValue = any>
     return useDefault ? this.supplyDefault() : useValue;
   }
 
-  set(target: T, property: Property, value: TValue) {
-    const { criteria, setValue } = this.determineCriteria(
-      target,
-      property,
-      value
-    );
+  set(target: T, property: Property, value: TValue): any {
+    const { criteria, setValue } = this.determineCriteria(target, property, value);
 
     const useValue = criteria.call(target, setValue, property, target)
       ? this.supplyDefault()
@@ -61,7 +57,11 @@ export class Defaults<T extends object = {}, TValue = any>
     return Reflect.set(target, property, useValue);
   }
 
-  protected determineCriteria(target: T, property: Property, value: TValue) {
+  protected determineCriteria(
+    target: T,
+    property: Property,
+    value: TValue
+  ): CriteriaValue<T, TValue> {
     const { criteria: setCriteria, setValue } = this.useCriteria(value);
     const isProtoProp = this.isPrototypeProperty(target, property);
 
@@ -72,10 +72,19 @@ export class Defaults<T extends object = {}, TValue = any>
   }
 
   protected isPrototypeProperty(target: T, event: Property): boolean {
-    return Object.getPrototypeOf(target).hasOwnProperty(event);
+    return Array.isArray(target)
+      ? // eslint-disable-next-line no-prototype-builtins
+        Object.getPrototypeOf(target).hasOwnProperty(event)
+      : Object.prototype.hasOwnProperty.call(target, event);
   }
 
-  protected useValue(target: T, event: Property) {
+  protected useValue(
+    target: T,
+    event: Property
+  ): {
+    useDefault: boolean;
+    useValue: any;
+  } {
     const value = Reflect.get(target, event);
     const isUndef = isUndefined(value);
     const didSet = this.setIfNeeded(target, event, isUndef);
@@ -97,7 +106,9 @@ export class Defaults<T extends object = {}, TValue = any>
     return this.setUndefined && isUndef;
   }
 
-  protected useCriteria(value: TValue | IgnoreCriteria<TValue>) {
+  protected useCriteria(
+    value: TValue | IgnoreCriteria<TValue>
+  ): CriteriaValue<T, TValue> {
     let setValue = value as TValue;
     let ignore = false;
 
@@ -109,7 +120,7 @@ export class Defaults<T extends object = {}, TValue = any>
     return { criteria: ignore ? criteria : this.setCriteria, setValue };
   }
 
-  protected shouldIgnore(value: any): value is IgnoreCriteria {
+  protected shouldIgnore(value: unknown): value is IgnoreCriteria {
     return (
       isObject(value) &&
       (value as IgnoreCriteria).ignoreDefaultCriteria !== undefined

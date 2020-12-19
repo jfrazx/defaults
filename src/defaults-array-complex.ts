@@ -4,7 +4,7 @@ import { Property } from './interfaces';
 
 export class DefaultsArrayComplex<
   T extends object = {},
-  TValue = any
+  TValue = unknown
 > extends DefaultsComplex<T, TValue> {
   get(target: T, event: Property, receiver?: T): TValue {
     const original = Reflect.get(target, event);
@@ -12,16 +12,16 @@ export class DefaultsArrayComplex<
       return super.get(target, event);
     }
 
-    return this.handle.bind(this, receiver, original) as any;
+    return (this.handle.bind(this, receiver, original) as unknown) as TValue;
   }
 
-  private handle(target: T, original: Function, ...args: any): TValue {
+  private handle(target: T, original: Function, ...args: unknown[]): TValue {
     const result: any = original.apply(target, args);
 
     return isUndefined(result) ? this.supplyDefault() : result;
   }
 
-  private isFunctionOrShiftPop(original: any, event: Property): boolean {
+  private isFunctionOrShiftPop(original: unknown, event: Property): boolean {
     return isFunction(original) || this.isShiftPop(event);
   }
 

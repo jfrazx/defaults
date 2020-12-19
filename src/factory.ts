@@ -8,7 +8,7 @@ import { Defaults } from './defaults';
 export function defaultsFactory<T extends object, TValue>(
   options: DefaultOptions<T, TValue>
 ): Default<T> {
-  const { wrap = {}, defaultValue } = options;
+  const { wrap = Object.create(null), defaultValue } = options;
   let handler: IDefaults<T, TValue>;
 
   switch (true) {
