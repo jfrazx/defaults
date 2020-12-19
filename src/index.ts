@@ -1,10 +1,13 @@
 import { DefaultOptions, Default } from './interfaces';
-import { Defaults } from './defaults';
+import { defaultsFactory } from './defaults';
 
+/**
+ * @param defaultOptions
+ */
 export const wrapDefaults = <T extends object = {}, TValue = any>(
   defaultOptions: DefaultOptions<T, TValue> = Object.create(null)
 ): Default<T> => {
-  return Defaults.wrap(defaultOptions);
+  return defaultsFactory(defaultOptions);
 };
 
 export * from './defaults';

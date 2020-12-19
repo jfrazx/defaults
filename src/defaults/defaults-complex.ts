@@ -1,10 +1,17 @@
+import { isObject, isObjectOrArray } from '../helpers';
+import { DefaultOptions } from '../interfaces/';
 import { Defaults } from './defaults';
-import { isObject } from './helpers';
 
 export class DefaultsComplex<T extends object, TValue = unknown> extends Defaults<
   T,
   TValue
 > {
+  static condition<T extends object, TValue>({
+    defaultValue,
+  }: DefaultOptions<T, TValue>): boolean {
+    return isObjectOrArray(defaultValue);
+  }
+
   private arrayClone(array: any): TValue {
     return this.shallowCopy
       ? (([...array] as unknown) as TValue)

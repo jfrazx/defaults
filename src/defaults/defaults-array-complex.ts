@@ -1,11 +1,18 @@
+import { DefaultOptions, Property } from '../interfaces';
+import { isFunction, isUndefined } from '../helpers';
 import { DefaultsComplex } from './defaults-complex';
-import { isFunction, isUndefined } from './helpers';
-import { Property } from './interfaces';
 
 export class DefaultsArrayComplex<
   T extends object = {},
   TValue = unknown
 > extends DefaultsComplex<T, TValue> {
+  static condition<T extends object, TValue>({
+    wrap,
+    defaultValue,
+  }: DefaultOptions<T, TValue>): boolean {
+    return [wrap, defaultValue].every(Array.isArray);
+  }
+
   get(target: T, event: Property, receiver?: T): TValue {
     const original = Reflect.get(target, event);
     if (!this.isFunctionOrShiftPop(original, event)) {

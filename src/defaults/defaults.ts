@@ -1,5 +1,5 @@
-import { isUndefined, isUnwrapDefaults, isObject } from './helpers';
-import { criteria } from './criteria';
+import { isUndefined, isUnwrapDefaults, isObject } from '../helpers';
+import { criteria } from '../configuration';
 import {
   Default,
   Criteria,
@@ -8,7 +8,7 @@ import {
   CriteriaValue,
   DefaultOptions,
   IgnoreCriteria,
-} from './interfaces';
+} from '../interfaces';
 
 export class Defaults<T extends object = {}, TValue = unknown>
   implements ProxyHandler<T>, IDefaults<T, TValue> {
@@ -29,6 +29,17 @@ export class Defaults<T extends object = {}, TValue = unknown>
     this.defaultValue = this.supplyDefault(defaultValue);
   }
 
+  static condition<T extends object, TValue>(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _options: DefaultOptions<T, TValue>
+  ): boolean {
+    return true;
+  }
+
+  /**
+   * @deprecated - use wrapDefaults export
+   * @param defaultOptions
+   */
   static wrap<T extends object = {}, TValue = any>(
     defaultOptions: DefaultOptions<T, TValue> = {}
   ): Default<T> {
@@ -132,4 +143,4 @@ export class Defaults<T extends object = {}, TValue = unknown>
   }
 }
 
-import { defaultsFactory } from './factory';
+import { defaultsFactory } from './index';

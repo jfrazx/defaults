@@ -1,17 +1,10 @@
-import { wrapDefaults, Defaults } from '../src';
+import { wrapDefaults } from '../src';
 import { expect } from 'chai';
 
 describe('Defaults', () => {
   describe('defaultValue', () => {
-    it('should supply undefined as default when directly using Defaults class', () => {
-      const d: any = new Defaults();
-
-      expect(d).to.be.an('object');
-      expect(d.value).to.be.undefined;
-    });
-
     it('should supply undefined as a default value', () => {
-      let d: any = Defaults.wrap();
+      let d: any = wrapDefaults();
 
       expect(d).to.be.an('object');
       expect(d.value).to.be.undefined;
@@ -23,7 +16,7 @@ describe('Defaults', () => {
     });
 
     it('should should allow user defined defaults', () => {
-      let d: any = Defaults.wrap({ defaultValue: 10 });
+      let d: any = wrapDefaults({ defaultValue: 10 });
       expect(d.value).to.equal(10);
 
       d = wrapDefaults({ defaultValue: 'string default content' });
