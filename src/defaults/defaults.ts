@@ -1,49 +1,15 @@
+import { Property, IDefaults, DefaultOptions, IgnoreCriteria } from '../interfaces';
 import { isUndefined, isUnwrapDefaults, isObject } from '../helpers';
+import { OptionsContainer } from '../options';
 import { criteria } from '../configuration';
-import {
-  Default,
-  Criteria,
-  Property,
-  IDefaults,
-  CriteriaValue,
-  DefaultOptions,
-  IgnoreCriteria,
-} from '../interfaces';
 
-export class Defaults<T extends object = {}, TValue = unknown>
-  implements ProxyHandler<T>, IDefaults<T, TValue> {
-  protected readonly defaultValue: TValue;
-  protected readonly setCriteria: Criteria<T, TValue>;
-  protected readonly setUndefined: boolean;
-  protected readonly shallowCopy: boolean;
+export class Defaults<T extends object = {}, TValue = any>
+  implements ProxyHandler<T>, IDefaults<T, TValue>
+{
+  protected readonly options: OptionsContainer<T, TValue>;
 
-  constructor({
-    defaultValue = undefined,
-    setCriteria = criteria,
-    setUndefined = false,
-    shallowCopy = true,
-  }: DefaultOptions<T, TValue> = {}) {
-    this.setCriteria = setCriteria;
-    this.setUndefined = setUndefined;
-    this.shallowCopy = shallowCopy;
-    this.defaultValue = this.supplyDefault(defaultValue);
-  }
-
-  static condition<T extends object, TValue>(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _options: DefaultOptions<T, TValue>
-  ): boolean {
-    return true;
-  }
-
-  /**
-   * @deprecated - use wrapDefaults export
-   * @param defaultOptions
-   */
-  static wrap<T extends object = {}, TValue = any>(
-    defaultOptions: DefaultOptions<T, TValue> = {}
-  ): Default<T> {
-    return defaultsFactory(defaultOptions);
+  constructor(options: DefaultOptions<T, TValue>) {
+    this.options = new OptionsContainer<T, TValue>(options);
   }
 
   unwrapDefaults(target: T): T {
@@ -59,7 +25,7 @@ export class Defaults<T extends object = {}, TValue = unknown>
     return useDefault ? this.supplyDefault() : useValue;
   }
 
-  set(target: T, property: Property, value: TValue): any {
+  set(target: T, property: Property, value: TValue) {
     const { criteria, setValue } = this.determineCriteria(target, property, value);
 
     const useValue = criteria.call(target, setValue, property, target)
@@ -68,11 +34,7 @@ export class Defaults<T extends object = {}, TValue = unknown>
     return Reflect.set(target, property, useValue);
   }
 
-  protected determineCriteria(
-    target: T,
-    property: Property,
-    value: TValue
-  ): CriteriaValue<T, TValue> {
+  protected determineCriteria(target: T, property: Property, value: TValue) {
     const { criteria: setCriteria, setValue } = this.useCriteria(value);
     const isProtoProp = this.isPrototypeProperty(target, property);
 
@@ -83,19 +45,10 @@ export class Defaults<T extends object = {}, TValue = unknown>
   }
 
   protected isPrototypeProperty(target: T, event: Property): boolean {
-    return Array.isArray(target)
-      ? // eslint-disable-next-line no-prototype-builtins
-        Object.getPrototypeOf(target).hasOwnProperty(event)
-      : Object.prototype.hasOwnProperty.call(target, event);
+    return Object.getPrototypeOf(target).hasOwnProperty(event);
   }
 
-  protected useValue(
-    target: T,
-    event: Property
-  ): {
-    useDefault: boolean;
-    useValue: any;
-  } {
+  protected useValue(target: T, event: Property) {
     const value = Reflect.get(target, event);
     const isUndef = isUndefined(value);
     const didSet = this.setIfNeeded(target, event, isUndef);
@@ -114,12 +67,10 @@ export class Defaults<T extends object = {}, TValue = unknown>
   }
 
   protected shouldSetUndefined(isUndef: boolean): boolean {
-    return this.setUndefined && isUndef;
+    return this.options.setUndefined && isUndef;
   }
 
-  protected useCriteria(
-    value: TValue | IgnoreCriteria<TValue>
-  ): CriteriaValue<T, TValue> {
+  protected useCriteria(value: TValue | IgnoreCriteria<TValue>) {
     let setValue = value as TValue;
     let ignore = false;
 
@@ -128,19 +79,16 @@ export class Defaults<T extends object = {}, TValue = unknown>
       ignore = value.ignoreDefaultCriteria;
     }
 
-    return { criteria: ignore ? criteria : this.setCriteria, setValue };
+    return { criteria: ignore ? criteria : this.options.setCriteria, setValue };
   }
 
-  protected shouldIgnore(value: unknown): value is IgnoreCriteria {
+  protected shouldIgnore(value: any): value is IgnoreCriteria {
     return (
-      isObject(value) &&
-      (value as IgnoreCriteria).ignoreDefaultCriteria !== undefined
+      isObject(value) && (value as IgnoreCriteria).ignoreDefaultCriteria !== undefined
     );
   }
 
-  protected supplyDefault(_default = this.defaultValue): TValue {
+  protected supplyDefault(_default = this.options.defaultValue): TValue {
     return _default;
   }
 }
-
-import { defaultsFactory } from './index';

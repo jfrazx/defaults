@@ -1,25 +1,19 @@
-import { DefaultOptions, Property } from '../interfaces';
 import { isFunction, isUndefined } from '../helpers';
-import { DefaultsComplex } from './defaults-complex';
+import { DefaultsComplex } from './defaultsComplex';
+import { Property } from '../interfaces';
+import { Methods } from '../enums';
 
 export class DefaultsArrayComplex<
-  T extends object = {},
-  TValue = unknown
+  T extends object,
+  TValue = unknown,
 > extends DefaultsComplex<T, TValue> {
-  static condition<T extends object, TValue>({
-    wrap,
-    defaultValue,
-  }: DefaultOptions<T, TValue>): boolean {
-    return [wrap, defaultValue].every(Array.isArray);
-  }
-
   get(target: T, event: Property, receiver?: T): TValue {
     const original = Reflect.get(target, event);
     if (!this.isFunctionOrShiftPop(original, event)) {
       return super.get(target, event);
     }
 
-    return (this.handle.bind(this, receiver, original) as unknown) as TValue;
+    return this.handle.bind(this, receiver, original) as unknown as TValue;
   }
 
   private handle(target: T, original: Function, ...args: unknown[]): TValue {
@@ -32,7 +26,7 @@ export class DefaultsArrayComplex<
     return isFunction(original) || this.isShiftPop(event);
   }
 
-  private isShiftPop(event: Property): boolean {
-    return event === 'pop' || event === 'shift';
+  private isShiftPop(event: Property) {
+    return [Methods.Pop, Methods.Shift].some((value: string) => value === event);
   }
 }
