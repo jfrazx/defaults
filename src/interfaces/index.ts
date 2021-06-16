@@ -28,14 +28,8 @@ export interface IgnoreCriteria<TValue = any> {
   value: TValue;
 }
 
-export interface DefaultOptions<T extends object = {}, TValue = any> {
-  /**
-   * Function to determine if default value should be used. Returning a truthy value supplies the default
-   *
-   * @default
-   * () => false;
-   */
-  setCriteria?: Criteria<T, TValue>;
+export interface DefaultOptions<T extends object = {}, TValue = any>
+  extends IDefaultOptions<T, TValue> {
   /**
    * The object or array which to supply default values
    *
@@ -43,6 +37,16 @@ export interface DefaultOptions<T extends object = {}, TValue = any> {
    * {}
    */
   wrap?: T;
+}
+
+export interface IDefaultOptions<T extends object = {}, TValue = any> {
+  /**
+   * Function to determine if default value should be used. Returning a truthy value supplies the default
+   *
+   * @default
+   * () => false;
+   */
+  setCriteria?: Criteria<T, TValue>;
 
   /**
    * The default value to be supplied
@@ -68,3 +72,4 @@ export interface DefaultOptions<T extends object = {}, TValue = any> {
    */
   shallowCopy?: boolean;
 }
+

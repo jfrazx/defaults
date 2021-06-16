@@ -1,7 +1,6 @@
-import { DefaultsEvent } from '../enums';
+import { Methods } from '../enums';
 
-export const isUnwrapDefaults = (value: unknown): boolean =>
-  value === DefaultsEvent.Unwrap;
+export const isUnwrapDefaults = (value: unknown): boolean => value === Methods.Unwrap;
 
 export const isObjectOrArray = (value: unknown): boolean =>
   isObject(value) || Array.isArray(value);
