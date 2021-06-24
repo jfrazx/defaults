@@ -1,17 +1,20 @@
 import { IDefaultOptions } from '../interfaces';
 import { criteria } from '../configuration';
 
-const defaultOptions: Required<IDefaultOptions> = {
+const defaultOptions: Required<IDefaultOptions<any>> = {
   defaultValue: undefined,
   setCriteria: criteria,
   setUndefined: false,
+  reuseMapKey: true,
   shallowCopy: true,
+  execute: false,
+  noCopy: false,
 };
 
-export interface OptionsContainer<T extends object = {}, TValue = any>
+export interface OptionsContainer<T extends object, TValue = any>
   extends Required<IDefaultOptions<T, TValue>> {}
 
-export class OptionsContainer<T extends object = {}, TValue = any> {
+export class OptionsContainer<T extends object, TValue = any> {
   constructor(readonly combinedOptions: IDefaultOptions<T, TValue>) {
     const options = this.mergeOptions(combinedOptions);
 

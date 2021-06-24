@@ -1,16 +1,27 @@
-import { DefaultOptions, Default } from '../interfaces';
-import { rules } from './rules';
+import { DefaultOptions, Default, IDefaults, IDefaultOptions } from '../interfaces';
+import { ValueHandlerRuleRunner } from '../rules';
+import { OptionsContainer } from '../options';
+import { getDefaultsRules } from '../rules';
 
 export abstract class DefaultsFactory {
   static for<T extends object, TValue>({
     wrap,
     ...options
   }: DefaultOptions<T, TValue>): Default<T> {
+    const optionsContainer = new OptionsContainer<T, TValue>(
+      options as IDefaultOptions<T, TValue>,
+    );
     const { defaultValue } = options;
-    const useWrap = wrap || {};
+    const useWrap = wrap || ({} as T);
 
-    const handler = rules
-      .map((Rule) => new Rule(useWrap, defaultValue, options))
+    const valueHandler = ValueHandlerRuleRunner.for<T, TValue>(
+      useWrap,
+      defaultValue as TValue,
+      optionsContainer,
+    );
+
+    const handler: IDefaults<T, TValue> = getDefaultsRules<T, TValue>()
+      .map((Rule) => new Rule(useWrap, optionsContainer, valueHandler))
       .find((rule) => rule.shouldHandle())!
       .handle();
 

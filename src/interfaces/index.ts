@@ -15,7 +15,7 @@ export interface Unwrap<T> {
 export type Criteria<T extends object, TValue = unknown> = (
   value: TValue,
   property: Property,
-  target: T
+  target: T,
 ) => boolean;
 
 export interface CriteriaValue<T extends object, TValue = any> {
@@ -28,48 +28,106 @@ export interface IgnoreCriteria<TValue = any> {
   value: TValue;
 }
 
-export interface DefaultOptions<T extends object = {}, TValue = any>
-  extends IDefaultOptions<T, TValue> {
-  /**
-   * The object or array which to supply default values
-   *
-   * @default
-   * {}
-   */
-  wrap?: T;
-}
+export type DefaultOptions<T extends object = {}, TValue = any> =
+  | {
+      /**
+       * The object or array which to supply default values
+       *
+       * @default {}
+       */
+      wrap?: T;
+    } & Omit<IDefaultOptions<T, TValue>, 'execute' | 'defaultValue'> &
+      ExecuteFunction<TValue>;
 
-export interface IDefaultOptions<T extends object = {}, TValue = any> {
+export interface IDefaultOptions<T extends object, TValue = any> {
   /**
    * Function to determine if default value should be used. Returning a truthy value supplies the default
    *
-   * @default
-   * () => false;
+   * @default () => false
    */
   setCriteria?: Criteria<T, TValue>;
 
   /**
-   * The default value to be supplied
-   *
-   * @default
-   * undefined
-   * */
-  defaultValue?: TValue;
-
-  /**
    * Set a default value if undefined
    *
-   * @default
-   * false
+   * @default false
    */
   setUndefined?: boolean;
 
   /**
    * If default is array or object, make a shallow copy when supplying the default
    *
-   * @default
-   * true
+   * @default true
    */
   shallowCopy?: boolean;
+
+  /**
+   * If true and default value is a Map the key will be reused.
+   * If false and default value is a Map the key will be cloned using shallowCopy rules.
+   *
+   * @default true
+   */
+  reuseMapKey?: boolean;
+
+  /**
+   * Indicates if non-primitive default values should be returned as-is
+   *
+   * @default false
+   * @type {boolean}
+   * @memberof IDefaultOptions
+   */
+  noCopy?: boolean;
+
+  /**
+   * If true and default value is a function said function will be executed and the result returned
+   *
+   * @default false
+   * @type {boolean}
+   * @memberof IDefaultOptions
+   */
+  execute?: boolean;
+  /**
+   * The default value to be supplied
+   *
+   * @default undefined
+   * */
+  defaultValue?: TValue;
 }
 
+export type ExecuteFunction<TValue> =
+  | {
+      /**
+       * If true and default value is a function said function will be executed and the result returned
+       *
+       * @default false
+       * @type {boolean}
+       * @memberof IDefaultOptions
+       */
+      execute: true;
+      /**
+       * The default value to be supplied
+       *
+       * @default undefined
+       * */
+      defaultValue: () => TValue;
+    }
+  | {
+      /**
+       * If true and default value is a function said function will be executed and the result returned
+       *
+       * @default false
+       * @type {boolean}
+       * @memberof IDefaultOptions
+       */
+      execute?: false | undefined;
+      /**
+       * The default value to be supplied
+       *
+       * @default undefined
+       * */
+      defaultValue?: TValue;
+    };
+
+export interface IValueHandler<TValue> {
+  supplyDefault(value?: any): TValue;
+}

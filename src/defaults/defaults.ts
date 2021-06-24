@@ -1,4 +1,4 @@
-import { Property, IDefaults, DefaultOptions, IgnoreCriteria } from '../interfaces';
+import { Property, IDefaults, IgnoreCriteria, IValueHandler } from '../interfaces';
 import { isUndefined, isUnwrapDefaults, isObject } from '../helpers';
 import { OptionsContainer } from '../options';
 import { criteria } from '../configuration';
@@ -6,11 +6,10 @@ import { criteria } from '../configuration';
 export class Defaults<T extends object = {}, TValue = any>
   implements ProxyHandler<T>, IDefaults<T, TValue>
 {
-  protected readonly options: OptionsContainer<T, TValue>;
-
-  constructor(options: DefaultOptions<T, TValue>) {
-    this.options = new OptionsContainer<T, TValue>(options);
-  }
+  constructor(
+    protected readonly options: OptionsContainer<T, TValue>,
+    protected readonly value: IValueHandler<TValue>,
+  ) {}
 
   unwrapDefaults(target: T): T {
     return target;
@@ -22,15 +21,16 @@ export class Defaults<T extends object = {}, TValue = any>
     }
 
     const { useDefault, useValue } = this.useValue(target, event);
-    return useDefault ? this.supplyDefault() : useValue;
+    return useDefault ? this.value.supplyDefault() : useValue;
   }
 
   set(target: T, property: Property, value: TValue) {
     const { criteria, setValue } = this.determineCriteria(target, property, value);
 
     const useValue = criteria.call(target, setValue, property, target)
-      ? this.supplyDefault()
+      ? this.value.supplyDefault()
       : setValue;
+
     return Reflect.set(target, property, useValue);
   }
 
@@ -62,7 +62,7 @@ export class Defaults<T extends object = {}, TValue = any>
 
   protected setIfNeeded(target: T, event: Property, isUndef: boolean): boolean {
     return this.shouldSetUndefined(isUndef)
-      ? Reflect.set(target, event, this.supplyDefault())
+      ? Reflect.set(target, event, this.value.supplyDefault())
       : false;
   }
 
@@ -86,9 +86,5 @@ export class Defaults<T extends object = {}, TValue = any>
     return (
       isObject(value) && (value as IgnoreCriteria).ignoreDefaultCriteria !== undefined
     );
-  }
-
-  protected supplyDefault(_default = this.options.defaultValue): TValue {
-    return _default;
   }
 }
