@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "rootDir": "./",
     "strict": true,
     "sourceMap": true,
     "target": "es2017",

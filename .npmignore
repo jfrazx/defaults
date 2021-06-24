@@ -26,3 +26,4 @@ src/
 test/
 .vscode/
 coverage/
+.github/
