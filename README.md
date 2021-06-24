@@ -4,7 +4,7 @@
 ![GitHub](https://img.shields.io/github/license/jfrazx/defaults.svg?style=plastic)
 ![Travis (.org)](https://img.shields.io/travis/jfrazx/defaults.svg?style=plastic)
 
-Supply default values for JavaScript Objects.
+Transparently supply default values for JavaScript Objects.
 
 ---
 
@@ -20,13 +20,14 @@ or
 
 ## Usage
 
-`Defaults` supplies a helper to wrap an object and provide default values.
+`Defaults` exposes a function, `wrapDefaults`, that receives your object and any options;
 
 ```typescript
 import { wrapDefaults } from '@status/defaults';
 
 const wrapped = wrapDefaults({
   wrap: myObject,
+  /** options explained below */
 });
 ```
 
@@ -86,7 +87,7 @@ expect(complex.point1).to.not.equal(complex.point2);
 expect(complex.point1[0]).to.not.equal(complex.point2[0]);
 ```
 
-Using `wrapDefaults` helper will add a type for `unwrapDefaults` method, which, when invoked, returns the original unwrapped object.
+Using `wrapDefaults` helper will add a type for `unwrapDefaults` method which, when invoked, returns the original unwrapped object.
 
 ```typescript
 import { wrapDefaults } from '@status/defaults';
@@ -126,11 +127,16 @@ expect(array[1]).to.equal(7);
 
 All options have default values.
 
-- wrap: `Object.create(null)`
-- shallowCopy: `true`
-- setUndefined: `false`
-- defaultValue: `undefined`
-- setCriteria: `() => false`
+|    Option    | Default Value | Description                                                                                  |
+| :----------: | :-----------: | -------------------------------------------------------------------------------------------- |
+|     wrap     |      {}       | The object to wrap                                                                           |
+| shallowCopy  |     true      | Only create shallow copies of `defaultValue` objects                                         |
+| setUndefined |     false     | Set undefined values with `defaultValue`                                                     |
+| defaultValue |   undefined   | The value to return if resolved value is undefined                                           |
+| setCriteria  |  () => false  | Function that can override value to be set with the `defaultValue`                           |
+|   execute    |     false     | If true and `defaultValue` is a function it will be executed and the result returned         |
+|    noCopy    |     false     | Indicates if non-primitive default values should be returned as-is                           |
+| reuseMapKey  |     true      | If true and default value is a Map the key will be reused, otherwise shallowCopy rules apply |
 
 ---
 
@@ -139,7 +145,7 @@ All options have default values.
 You may override your defined criteria should you _really_ need to set a value that would fail.
 
 ```typescript
-const aboveZero = Defaults.wrap({
+const aboveZero = wrapDefaults({
   defaultValue: 0,
   setCriteria: (v) => v < 0,
 });
@@ -157,7 +163,7 @@ console.log(aboveZero);
 Determining if a property exists on an object is unaffected when using `Defaults`, even when using `setUndefined`.
 
 ```typescript
-const wrapped = Defaults.wrap({ defaultValue: [], setUndefined: true });
+const wrapped = wrapDefaults({ defaultValue: [], setUndefined: true });
 const prop = 'prop';
 
 expect(prop in wrapped).to.be.false;
@@ -168,9 +174,9 @@ expect(prop in wrapped).to.be.false;
 ## Examples
 
 ```typescript
-import { Defaults } from '@status/defaults';
+import { wrapDefaults } from '@status/defaults';
 
-const charCount = Defaults.wrap({
+const charCount = wrapDefaults({
   defaultValue: 0,
   setCriteria: (v) => v < 0,
 });
@@ -204,7 +210,7 @@ const myObj = { prop1: [] };
 Use defaults instead.
 
 ```typescript
-const myObj = Defaults.wrap({ defaultValue: [] });
+const myObj = wrapDefaults({ defaultValue: [] });
 
 myObj.ifNotExistsWillStillHaveArray.forEach(...);
 ```

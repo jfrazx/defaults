@@ -1,18 +1,28 @@
 {
   "extends": "@istanbuljs/nyc-config-typescript",
   "check-coverage": true,
-  "per-file": false,
   "lines": 99,
   "produce-source-map": true,
-  "statements": 95,
-  "functions": 95,
+  "statements": 99,
+  "functions": 99,
   "branches": 87,
-  "reporter": ["lcov", "text-summary", "html"],
   "all": false,
   "cache": true,
   "report-dir": "./coverage",
-  "tmp-directory": ".nyc_output",
   "extension": [".ts", ".tsx"],
+  "tmp-directory": ".nyc_output",
+  "reporter": ["lcov", "text-summary", "html"],
   "require": ["ts-node/register", "source-map-support/register"],
-  "exclude": ["src/index.ts", "test/**/*", "coverage/**/*", "**/*.d.ts"]
+  "exclude": [
+    "test/**/*",
+    "**/*.d.ts",
+    "coverage/**/*",
+    "src/rules/index.ts",
+    "src/factory/index.ts",
+    "src/defaults/index.ts",
+    "src/handlers/index.ts",
+    "src/rules/defaults/index.ts",
+    "src/handlers/value/index.ts",
+    "src/handlers/value/handlers/index.ts"
+  ]
 }

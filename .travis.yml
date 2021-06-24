@@ -6,10 +6,9 @@ cache:
 notifications:
   email: false
 node_js:
-  - '15'
+  - '16'
   - '14'
   - '12'
-  - '10'
 before_script:
   - npm prune
 script:

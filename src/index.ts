@@ -1,14 +1,8 @@
-import { DefaultOptions, Default } from './interfaces';
-import { defaultsFactory } from './defaults';
+import { DefaultOptions } from './interfaces';
+import { DefaultsFactory } from './factory';
 
-/**
- * @param defaultOptions
- */
 export const wrapDefaults = <T extends object = {}, TValue = any>(
-  defaultOptions: DefaultOptions<T, TValue> = Object.create(null)
-): Default<T> => {
-  return defaultsFactory(defaultOptions);
-};
+  defaultOptions: DefaultOptions<T, TValue> = {},
+) => DefaultsFactory.for(defaultOptions);
 
-export * from './defaults';
 export { Default, Criteria, DefaultOptions, IgnoreCriteria } from './interfaces';
