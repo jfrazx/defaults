@@ -7,6 +7,6 @@ export class DefaultsRule<T extends object, TValue> extends DefaultRule<T, TValu
     return true;
   }
   handle(): IDefaults<T, TValue> {
-    return new Defaults<T, TValue>(this.options);
+    return new Defaults<T, TValue>(this.options, this.valueHandler);
   }
 }

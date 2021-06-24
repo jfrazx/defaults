@@ -1,4 +1,5 @@
-import { IDefaults, IDefaultOptions } from '../../../interfaces';
+import { IDefaults, IValueHandler } from '../../../interfaces';
+import { OptionsContainer } from '../../../options';
 import { ShouldHandle } from '../../interfaces';
 
 export abstract class DefaultRule<T extends object, TValue>
@@ -6,8 +7,8 @@ export abstract class DefaultRule<T extends object, TValue>
 {
   constructor(
     protected readonly wrap: T,
-    protected readonly defaultValue: TValue,
-    protected readonly options: IDefaultOptions<T, TValue>,
+    protected readonly options: OptionsContainer<T, TValue>,
+    protected readonly valueHandler: IValueHandler<TValue>,
   ) {}
 
   abstract shouldHandle(): boolean;

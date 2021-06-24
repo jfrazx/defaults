@@ -1,4 +1,4 @@
-import { wrapDefaults } from '../src/index';
+import { wrapDefaults } from '../src/';
 import { expect } from 'chai';
 
 describe('Arrays', () => {

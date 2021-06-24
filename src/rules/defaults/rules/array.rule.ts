@@ -7,6 +7,6 @@ export class ArrayRule<T extends object, TValue> extends DefaultRule<T, TValue> 
     return Array.isArray(this.wrap);
   }
   handle(): IDefaults<T, TValue> {
-    return new DefaultsArray<T, TValue>(this.options);
+    return new DefaultsArray<T, TValue>(this.options, this.valueHandler);
   }
 }
