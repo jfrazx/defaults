@@ -222,4 +222,31 @@ describe('Defaults', () => {
       expect(unwrapped).to.equal(a);
     });
   });
+
+  describe('noCopy', () => {
+    it('should not make a copies of objects', () => {
+      const myO = { value: 'some content' };
+
+      const wrapped = wrapDefaults<any, { [key: string]: string }>({
+        defaultValue: myO,
+        noCopy: true,
+      });
+
+      expect(wrapped.something).to.be.an('object');
+      expect(wrapped.anything).to.equal(myO);
+    });
+
+    it('should not make a copies of arrays', () => {
+      const myA = [{}];
+
+      const wrapped = wrapDefaults<any, { [key: string]: string }[]>({
+        defaultValue: myA,
+        noCopy: true,
+      });
+
+      expect(wrapped.something).to.be.an('array');
+      expect(wrapped.anything).to.equal(myA);
+      expect(wrapped.more[0]).to.equal(myA[0]);
+    });
+  });
 });

@@ -1,6 +1,6 @@
 {
   "name": "@status/defaults",
-  "version": "0.0.0-development",
+  "version": "1.3.2",
   "description": "Transparently provide default values to objects",
   "main": "build/index.js",
   "scripts": {

@@ -17,11 +17,11 @@ interface ValueRuleConstruct<T extends object, TValue> {
 
 export const getValueHandlerRules = <T extends object, TValue>() => {
   return [
+    NoCopyHandlerRule,
     MapHandlerRule,
     SetHandlerRule,
     WeakHandlerRule,
     ObjectHandlerRule,
-    NoCopyHandlerRule,
     FunctionHandlerRule,
     PrimitiveHandlerRule,
   ] as unknown as ValueRuleConstruct<T, TValue>[];
