@@ -11,8 +11,8 @@ export abstract class DefaultsFactory {
     const optionsContainer = new OptionsContainer<T, TValue>(
       options as IDefaultOptions<T, TValue>,
     );
+    const useWrap = wrap || (Object.create(null) as T);
     const { defaultValue } = options;
-    const useWrap = wrap || ({} as T);
 
     const valueHandler = ValueHandlerRuleRunner.for<T, TValue>(
       useWrap,

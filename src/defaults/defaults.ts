@@ -45,7 +45,7 @@ export class Defaults<T extends object = {}, TValue = any>
   }
 
   protected isPrototypeProperty(target: T, event: Property): boolean {
-    return Object.getPrototypeOf(target).hasOwnProperty(event);
+    return Object.getPrototypeOf(target)?.hasOwnProperty(event) ?? false;
   }
 
   protected useValue(target: T, event: Property) {
