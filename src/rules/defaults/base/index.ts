@@ -1,6 +1,6 @@
-import { IDefaults, IValueHandler } from '../../../interfaces';
-import { OptionsContainer } from '../../../options';
-import { ShouldHandle } from '../../interfaces';
+import type { IDefaults, IValueHandler } from '../../../interfaces';
+import type { OptionsContainer } from '../../../options';
+import type { ShouldHandle } from '../../interfaces';
 
 export abstract class DefaultRule<T extends object, TValue>
   implements ShouldHandle<IDefaults<T, TValue>>

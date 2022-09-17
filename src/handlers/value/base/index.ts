@@ -1,5 +1,5 @@
-import { OptionsContainer } from '../../../options';
-import { IValueHandler } from '../../../interfaces';
+import type { OptionsContainer } from '../../../options';
+import type { IValueHandler } from '../../../interfaces';
 
 export abstract class ValueHandler<T extends object, TValue>
   implements IValueHandler<TValue>

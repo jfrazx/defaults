@@ -6,12 +6,12 @@ export class ObjectValueHandler<T extends object, TValue> extends ValueHandler<
   T,
   object | Array<TValue>
 > {
-  supplyDefault(defaultValue = this.value) {
-    return Array.isArray(defaultValue)
-      ? this.arrayClone(defaultValue)
-      : isObject(defaultValue)
-      ? this.objectClone(defaultValue)
-      : defaultValue;
+  supplyDefault() {
+    return Array.isArray(this.value)
+      ? this.arrayClone(this.value)
+      : isObject(this.value)
+      ? this.objectClone(this.value)
+      : this.value;
   }
 
   private arrayClone(array: any) {

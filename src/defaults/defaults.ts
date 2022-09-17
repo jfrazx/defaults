@@ -1,8 +1,18 @@
-import { Property, IDefaults, IgnoreCriteria, IValueHandler } from '../interfaces';
+import type { Property, IDefaults, IgnoreCriteria, IValueHandler } from '../interfaces';
 import { isUndefined, isUnwrapDefaults, isObject } from '../helpers';
-import { OptionsContainer } from '../options';
+import type { OptionsContainer } from '../options';
 import { criteria } from '../configuration';
 
+/**
+ * @description Base handler for managing wrapped content
+ *
+ * @export
+ * @class Defaults
+ * @implements {ProxyHandler<T>}
+ * @implements {IDefaults<T, TValue>}
+ * @template T
+ * @template TValue
+ */
 export class Defaults<T extends object = {}, TValue = any>
   implements ProxyHandler<T>, IDefaults<T, TValue>
 {
@@ -50,9 +60,9 @@ export class Defaults<T extends object = {}, TValue = any>
 
   protected useValue(target: T, event: Property) {
     const value = Reflect.get(target, event);
-    const isUndef = isUndefined(value);
-    const didSet = this.setIfNeeded(target, event, isUndef);
-    const useDefault = isUndef && !didSet;
+    const wasUndefined = isUndefined(value);
+    const didSet = this.setIfNeeded(target, event, wasUndefined);
+    const useDefault = wasUndefined && !didSet;
 
     return {
       useDefault,
@@ -60,14 +70,14 @@ export class Defaults<T extends object = {}, TValue = any>
     };
   }
 
-  protected setIfNeeded(target: T, event: Property, isUndef: boolean): boolean {
-    return this.shouldSetUndefined(isUndef)
+  protected setIfNeeded(target: T, event: Property, wasUndefined: boolean): boolean {
+    return this.shouldSetUndefined(wasUndefined)
       ? Reflect.set(target, event, this.value.supplyDefault())
       : false;
   }
 
-  protected shouldSetUndefined(isUndef: boolean): boolean {
-    return this.options.setUndefined && isUndef;
+  protected shouldSetUndefined(wasUndefined: boolean): boolean {
+    return this.options.setUndefined && wasUndefined;
   }
 
   protected useCriteria(value: TValue | IgnoreCriteria<TValue>) {

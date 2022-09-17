@@ -1,5 +1,5 @@
-import { IDefaults, IValueHandler } from '../../interfaces';
-import { OptionsContainer } from '../../options';
+import type { IDefaults, IValueHandler } from '../../interfaces';
+import type { OptionsContainer } from '../../options';
 
 export interface ShouldHandle<T> {
   shouldHandle(): boolean;

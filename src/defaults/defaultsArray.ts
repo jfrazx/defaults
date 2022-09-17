@@ -1,8 +1,17 @@
 import { isFunction, isUndefined } from '../helpers';
-import { TargetReceiver } from './interfaces';
-import { Property } from '../interfaces';
+import type { TargetReceiver } from './interfaces';
+import type { Property } from '../interfaces';
 import { Defaults } from './defaults';
 
+/**
+ * @description Handler for wrapped arrays
+ *
+ * @export
+ * @class DefaultsArray
+ * @extends {Defaults<T, TValue>}
+ * @template T
+ * @template TValue
+ */
 export class DefaultsArray<T extends object, TValue = any> extends Defaults<T, TValue> {
   get(target: T, event: Property, receiver?: T): TValue {
     const intendedTarget = this.getTarget({ target, receiver });
@@ -23,13 +32,7 @@ export class DefaultsArray<T extends object, TValue = any> extends Defaults<T, T
     return isUndefined(result) ? this.supplyDefaultAndSet(target, args) : result;
   }
 
-  protected supplyDefaultAndSet(target: T, args: any[]) {
-    const value = this.value.supplyDefault();
-
-    this.setValue(target, args, value);
-
-    return value;
+  protected supplyDefaultAndSet(_target: T, _args: any[]) {
+    return this.value.supplyDefault();
   }
-
-  protected setValue(_target: T, _args: any[], _value: TValue) {}
 }

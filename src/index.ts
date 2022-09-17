@@ -1,4 +1,4 @@
-import { DefaultOptions } from './interfaces';
+import type { DefaultOptions } from './interfaces';
 import { DefaultsFactory } from './factory';
 
 export const wrapDefaults = <T extends object = {}, TValue = any>(

@@ -1,5 +1,5 @@
+import type { TargetReceiver } from './interfaces';
 import { DefaultsArray } from './defaultsArray';
-import { TargetReceiver } from './interfaces';
 
 export class DefaultsMap<T extends object, TValue = any> extends DefaultsArray<
   Map<T, TValue>,
@@ -9,9 +9,13 @@ export class DefaultsMap<T extends object, TValue = any> extends DefaultsArray<
     return target;
   }
 
-  protected setValue(target: Map<T, TValue>, [key]: any[]) {
+  protected supplyDefaultAndSet(target: Map<T, TValue>, [key]: any[]) {
+    const value = this.value.supplyDefault();
+
     if (this.shouldSetUndefined(true)) {
-      target.set(key, this.value.supplyDefault());
+      target.set(key, value);
     }
+
+    return value;
   }
 }

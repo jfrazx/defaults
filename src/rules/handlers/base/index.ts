@@ -1,6 +1,6 @@
-import { OptionsContainer } from '../../../options';
-import { IValueHandler } from '../../../interfaces';
-import { ShouldHandle } from '../../interfaces';
+import type { OptionsContainer } from '../../../options';
+import type { IValueHandler } from '../../../interfaces';
+import type { ShouldHandle } from '../../interfaces';
 
 export abstract class ValueHandlerRule<T extends object, TValue>
   implements ShouldHandle<IValueHandler<TValue>>
