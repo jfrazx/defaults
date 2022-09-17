@@ -1,21 +1,29 @@
 import { ValueHandlerRuleRunner } from '../../../rules';
 import { ValueHandler } from '../base';
 
+/**
+ * @description Map value handler operators on
+ *
+ * @export
+ * @class MapValueHandler
+ * @extends {ValueHandler<T, Map<T, TValue>>}
+ * @template T
+ * @template TValue
+ */
 export class MapValueHandler<T extends object, TValue> extends ValueHandler<
   T,
   Map<T, TValue>
 > {
-  supplyDefault(values: Map<T, TValue> = this.value) {
+  supplyDefault() {
     const { reuseMapKey } = this.options;
     const map = new Map<T, TValue>();
 
-    for (const [key, value] of values.entries()) {
-      const valueHandler = ValueHandlerRuleRunner.for<T, any>(
+    for (const [key, value] of this.value.entries()) {
+      const updatedValue = ValueHandlerRuleRunner.for<T, any>(
         this.target,
         value,
         this.options,
-      );
-      const updatedValue = valueHandler.supplyDefault();
+      ).supplyDefault();
 
       const updatedKey = reuseMapKey
         ? key

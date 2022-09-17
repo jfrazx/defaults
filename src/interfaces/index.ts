@@ -1,51 +1,52 @@
-export type Default<T extends object = {}> = T & Unwrap<T>;
+export type Default<WrappedObject extends object = {}> = WrappedObject &
+  Unwrap<WrappedObject>;
 
-export interface IDefaults<T, TValue> {
-  get(target: T, event: Property): TValue;
-  set(target: T, property: Property, value: TValue): boolean;
-  unwrapDefaults(target: T): T;
+export interface IDefaults<WrappedObject, DefaultValue> {
+  get(target: WrappedObject, event: Property): DefaultValue;
+  set(target: WrappedObject, property: Property, value: DefaultValue): boolean;
+  unwrapDefaults(target: WrappedObject): WrappedObject;
 }
 
 export type Property = string | number | symbol;
 
-export interface Unwrap<T> {
-  unwrapDefaults(): T;
+export interface Unwrap<WrappedObject> {
+  unwrapDefaults(): WrappedObject;
 }
 
-export type Criteria<T extends object, TValue = unknown> = (
-  value: TValue,
+export type Criteria<WrappedObject extends object, DefaultValue = unknown> = (
+  value: DefaultValue,
   property: Property,
-  target: T,
+  target: WrappedObject,
 ) => boolean;
 
-export interface CriteriaValue<T extends object, TValue = any> {
-  criteria: Criteria<T, TValue>;
-  setValue: TValue;
+export interface CriteriaValue<WrappedObject extends object, DefaultValue = any> {
+  criteria: Criteria<WrappedObject, DefaultValue>;
+  setValue: DefaultValue;
 }
 
-export interface IgnoreCriteria<TValue = any> {
+export interface IgnoreCriteria<DefaultValue = any> {
   ignoreDefaultCriteria: boolean;
-  value: TValue;
+  value: DefaultValue;
 }
 
-export type DefaultOptions<T extends object = {}, TValue = any> =
+export type DefaultOptions<WrappedObject extends object = {}, DefaultValue = any> =
   | {
       /**
        * The object or array which to supply default values
        *
        * @default {}
        */
-      wrap?: T;
-    } & Omit<IDefaultOptions<T, TValue>, 'execute' | 'defaultValue'> &
-      ExecuteFunction<TValue>;
+      wrap?: WrappedObject;
+    } & Omit<IDefaultOptions<WrappedObject, DefaultValue>, 'execute' | 'defaultValue'> &
+      ExecuteFunction<DefaultValue>;
 
-export interface IDefaultOptions<T extends object, TValue = any> {
+export interface IDefaultOptions<WrappedObject extends object, DefaultValue = any> {
   /**
    * Function to determine if default value should be used. Returning a truthy value supplies the default
    *
    * @default () => false
    */
-  setCriteria?: Criteria<T, TValue>;
+  setCriteria?: Criteria<WrappedObject, DefaultValue>;
 
   /**
    * Set a default value if undefined
@@ -91,10 +92,10 @@ export interface IDefaultOptions<T extends object, TValue = any> {
    *
    * @default undefined
    * */
-  defaultValue?: TValue;
+  defaultValue?: DefaultValue;
 }
 
-export type ExecuteFunction<TValue> =
+export type ExecuteFunction<DefaultValue> =
   | {
       /**
        * If true and default value is a function said function will be executed and the result returned
@@ -109,7 +110,7 @@ export type ExecuteFunction<TValue> =
        *
        * @default undefined
        * */
-      defaultValue: () => TValue;
+      defaultValue: () => DefaultValue;
     }
   | {
       /**
@@ -125,9 +126,9 @@ export type ExecuteFunction<TValue> =
        *
        * @default undefined
        * */
-      defaultValue?: TValue;
+      defaultValue?: DefaultValue;
     };
 
-export interface IValueHandler<TValue> {
-  supplyDefault(value?: any): TValue;
+export interface IValueHandler<DefaultValue> {
+  supplyDefault(): DefaultValue;
 }

@@ -1,4 +1,4 @@
-import { IDefaultOptions } from '../interfaces';
+import type { IDefaultOptions } from '../interfaces';
 import { criteria } from '../configuration';
 
 const defaultOptions: Required<IDefaultOptions<any>> = {

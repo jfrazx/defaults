@@ -1,4 +1,4 @@
-import { DefaultRuleConstruct } from '../../interfaces';
+import type { DefaultRuleConstruct } from '../../interfaces';
 import { DefaultsRule } from './defaults.rule';
 import { ArrayRule } from './array.rule';
 import { MapRule } from './map.rule';

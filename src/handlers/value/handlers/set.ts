@@ -5,10 +5,10 @@ export class SetValueHandler<T extends object, TValue> extends ValueHandler<
   T,
   Set<TValue>
 > {
-  supplyDefault(value: Set<TValue> = this.value) {
+  supplyDefault() {
     const set = new Set<TValue>();
 
-    value.forEach((value) => {
+    this.value.forEach((value: TValue) => {
       const handler = ValueHandlerRuleRunner.for<T, any>(
         this.target,
         value,

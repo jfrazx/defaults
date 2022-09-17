@@ -1,4 +1,4 @@
-import { DefaultOptions, Default, IDefaults, IDefaultOptions } from '../interfaces';
+import type { DefaultOptions, Default, IDefaults, IDefaultOptions } from '../interfaces';
 import { ValueHandlerRuleRunner } from '../rules';
 import { OptionsContainer } from '../options';
 import { getDefaultsRules } from '../rules';
