@@ -1,5 +1,5 @@
+import type { IValueHandler, Property } from '../../../interfaces';
 import type { OptionsContainer } from '../../../options';
-import type { IValueHandler } from '../../../interfaces';
 
 export abstract class ValueHandler<T extends object, TValue>
   implements IValueHandler<TValue>
@@ -10,5 +10,5 @@ export abstract class ValueHandler<T extends object, TValue>
     protected readonly options: OptionsContainer<T, TValue>,
   ) {}
 
-  abstract supplyDefault(value?: any): TValue;
+  abstract supplyDefault(event: Property): TValue;
 }

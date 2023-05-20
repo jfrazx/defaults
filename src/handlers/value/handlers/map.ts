@@ -1,4 +1,5 @@
 import { ValueHandlerRuleRunner } from '../../../rules';
+import type { Property } from '../../../interfaces';
 import { ValueHandler } from '../base';
 
 /**
@@ -14,7 +15,7 @@ export class MapValueHandler<T extends object, TValue> extends ValueHandler<
   T,
   Map<T, TValue>
 > {
-  supplyDefault() {
+  supplyDefault(event: Property) {
     const { reuseMapKey } = this.options;
     const map = new Map<T, TValue>();
 
@@ -23,7 +24,7 @@ export class MapValueHandler<T extends object, TValue> extends ValueHandler<
         this.target,
         value,
         this.options,
-      ).supplyDefault();
+      ).supplyDefault(event);
 
       const updatedKey = reuseMapKey
         ? key
@@ -31,7 +32,7 @@ export class MapValueHandler<T extends object, TValue> extends ValueHandler<
             this.target,
             key,
             this.options,
-          ).supplyDefault();
+          ).supplyDefault(event);
 
       map.set(updatedKey, updatedValue);
     }

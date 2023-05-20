@@ -1,7 +1,7 @@
 import type { DefaultOptions, Default, IDefaults, IDefaultOptions } from '../interfaces';
-import { ValueHandlerRuleRunner } from '../rules';
+import type { DefaultRuleConstruct, ShouldHandle } from '../rules/interfaces';
+import { ValueHandlerRuleRunner, getDefaultsRules } from '../rules';
 import { OptionsContainer } from '../options';
-import { getDefaultsRules } from '../rules';
 
 export abstract class DefaultsFactory {
   static for<T extends object, TValue>({
@@ -21,8 +21,11 @@ export abstract class DefaultsFactory {
     );
 
     const handler: IDefaults<T, TValue> = getDefaultsRules<T, TValue>()
-      .map((Rule) => new Rule(useWrap, optionsContainer, valueHandler))
-      .find((rule) => rule.shouldHandle())!
+      .map(
+        (Rule: DefaultRuleConstruct<T, TValue>) =>
+          new Rule(useWrap, optionsContainer, valueHandler),
+      )
+      .find((rule: ShouldHandle<IDefaults<T, TValue>>) => rule.shouldHandle())!
       .handle();
 
     return new Proxy(useWrap, handler) as Default<T>;
