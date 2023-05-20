@@ -30,5 +30,13 @@ describe('FunctionValueHandler', () => {
 
     expect(wrapped.something).to.be.an('object');
     expect(wrapped.anything).to.deep.equal({ val: 5, key: 'anything' });
+
+    const wrapped2 = wrapDefaults<{ [key: string]: string }>({
+      defaultValue: (prop) => prop,
+      setUndefined: true,
+      execute: true,
+    });
+
+    expect(wrapped2.four).to.equal('four');
   });
 });
