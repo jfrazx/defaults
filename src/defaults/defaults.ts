@@ -27,18 +27,19 @@ export class Defaults<T extends object = {}, TValue = any>
 
   get(target: T, event: Property): TValue {
     if (isUnwrapDefaults(event)) {
-      return this.unwrapDefaults.bind(this, target) as any;
+      return this.unwrapDefaults.bind(this, target) as TValue;
     }
 
     const { useDefault, useValue } = this.useValue(target, event);
-    return useDefault ? this.value.supplyDefault() : useValue;
+
+    return useDefault ? this.value.supplyDefault(event) : (useValue as TValue);
   }
 
   set(target: T, property: Property, value: TValue) {
     const { criteria, setValue } = this.determineCriteria(target, property, value);
 
     const useValue = criteria.call(target, setValue, property, target)
-      ? this.value.supplyDefault()
+      ? this.value.supplyDefault(property)
       : setValue;
 
     return Reflect.set(target, property, useValue);
@@ -72,7 +73,7 @@ export class Defaults<T extends object = {}, TValue = any>
 
   protected setIfNeeded(target: T, event: Property, wasUndefined: boolean): boolean {
     return this.shouldSetUndefined(wasUndefined)
-      ? Reflect.set(target, event, this.value.supplyDefault())
+      ? Reflect.set(target, event, this.value.supplyDefault(event))
       : false;
   }
 

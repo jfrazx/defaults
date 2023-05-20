@@ -127,16 +127,16 @@ expect(array[1]).to.equal(7);
 
 All options have default values.
 
-|    Option    | Default Value | Description                                                                                  |
-| :----------: | :-----------: | -------------------------------------------------------------------------------------------- |
-|     wrap     |      {}       | The object to wrap                                                                           |
-| shallowCopy  |     true      | Only create shallow copies of `defaultValue` objects                                         |
-| setUndefined |     false     | Set undefined values with `defaultValue`                                                     |
-| defaultValue |   undefined   | The value to return if resolved value is undefined                                           |
-| setCriteria  |  () => false  | Function that can override value to be set with the `defaultValue`                           |
-|   execute    |     false     | If true and `defaultValue` is a function it will be executed and the result returned         |
-|    noCopy    |     false     | Indicates if non-primitive default values should be returned as-is                           |
-| reuseMapKey  |     true      | If true and default value is a Map the key will be reused, otherwise shallowCopy rules apply |
+|    Option    | Default Value | Description                                                                                                            |
+| :----------: | :-----------: | ---------------------------------------------------------------------------------------------------------------------- |
+|     wrap     |      {}       | The object to wrap                                                                                                     |
+| shallowCopy  |     true      | Only create shallow copies of `defaultValue` objects                                                                   |
+| setUndefined |     false     | Set undefined values with `defaultValue`                                                                               |
+| defaultValue |   undefined   | The value to return if resolved value is undefined                                                                     |
+| setCriteria  |  () => false  | Function that can override value to be set with the `defaultValue`                                                     |
+|   execute    |     false     | If true and `defaultValue` is a function it will be executed and the result returned. Receives property being accessed |
+|    noCopy    |     false     | Indicates if non-primitive default values should be returned as-is                                                     |
+| reuseMapKey  |     true      | If true and default value is a Map the key will be reused, otherwise shallowCopy rules apply                           |
 
 ---
 
