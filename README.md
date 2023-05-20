@@ -2,7 +2,9 @@
 
 ![npm (scoped)](https://img.shields.io/npm/v/@status/defaults.svg?style=plastic)
 ![GitHub](https://img.shields.io/github/license/jfrazx/defaults.svg?style=plastic)
-![Travis (.org)](https://img.shields.io/travis/jfrazx/defaults.svg?style=plastic)
+![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/jfrazx/defaults/tests.yml?label=tests&style=plastic)
+![npm bundle size (scoped)](https://img.shields.io/bundlephobia/min/@status/defaults?style=plastic)
+![npm bundle size (scoped)](https://img.shields.io/bundlephobia/minzip/@status/defaults?style=plastic)
 
 Transparently supply default values for JavaScript Objects.
 
@@ -33,7 +35,7 @@ const wrapped = wrapDefaults({
 
 `Defaults` default is `undefined`, which makes it rather useless, so supplying your own default is a good idea.
 
-Additionally, it accepts a function that can be used to determine if a default value should be used instead of the value being set. Returning `true`, or any truthy value, will result in your default value being set.
+Additionally, it accepts a function, `setCriteria`, that can be used to determine if a default value should be used instead of the value being set. Returning `true`, or any truthy value, will result in your default value being set.
 
 ```typescript
 import { wrapDefaults } from '@status/defaults';
@@ -41,7 +43,7 @@ import { wrapDefaults } from '@status/defaults';
 const wrapped = wrapDefaults({
   wrap: myObject,
   defaultValue: 0,
-  setCriteria: (value, _property, _myObject) => value < 0,
+  setCriteria: (value: number, _property: string, _myObject: T) => value < 0,
 });
 
 wrapped.belowZero = -35;
@@ -49,7 +51,7 @@ wrapped.belowZero = -35;
 expect(wrapped.belowZero).to.equal(0);
 ```
 
-Be aware that while defaults are supplied for undefined values they are not set. This behavior can be modified.
+Be aware that while defaults are supplied for undefined values they are not set. This behavior may be modified.
 
 ```typescript
 import { wrapDefaults } from '@status/defaults';
@@ -87,6 +89,42 @@ expect(complex.point1).to.not.equal(complex.point2);
 expect(complex.point1[0]).to.not.equal(complex.point2[0]);
 ```
 
+You can also use a function as a default value. If `execute` is `true` the function will be executed and the result returned.
+
+```typescript
+const wrapped = wrapDefaults({
+  defaultValue: () => 2 + 2,
+  setUndefined: true,
+  execute: true,
+});
+
+expect(wrapped.four).to.equal(4);
+```
+
+The function will receive the property being accessed as its first argument.
+
+```typescript
+const wrapped = wrapDefaults({
+  defaultValue: (prop) => prop,
+  setUndefined: true,
+  execute: true,
+});
+
+expect(wrapped.four).to.equal('four');
+```
+
+If you want to use a function as a default value but not execute it, set `execute` to `false`.
+
+```typescript
+const wrapped = wrapDefaults({
+  defaultValue: () => 2 + 2,
+  setUndefined: true,
+  execute: false,
+});
+
+expect(wrapped.four).to.be.a('function');
+```
+
 Using `wrapDefaults` helper will add a type for `unwrapDefaults` method which, when invoked, returns the original unwrapped object.
 
 ```typescript
@@ -99,7 +137,7 @@ const defaults = wrapDefaults({ wrap: person });
 const unwrapped = defaults.unwrapDefaults();
 
 expect(person).to.not.equal(defaults);
-expect(unwrapped).to.equal(person);
+expect(person).to.equal(unwrapped);
 ```
 
 Defaults can also wrap arrays.
