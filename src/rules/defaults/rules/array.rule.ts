@@ -1,5 +1,5 @@
 import type { IDefaults } from '../../../interfaces';
-import { DefaultsArray } from '../../../defaults';
+import { DefaultsArray } from '../../../handlers';
 import { DefaultRule } from '../base';
 
 export class ArrayRule<T extends object, TValue> extends DefaultRule<T, TValue> {

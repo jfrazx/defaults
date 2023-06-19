@@ -1,6 +1,15 @@
 import type { TargetReceiver } from './interfaces';
 import { DefaultsArray } from './defaultsArray';
 
+/**
+ * @description Handler for wrapped Maps
+ *
+ * @export
+ * @class DefaultsMap
+ * @extends {DefaultsArray<Map<T, TValue>, TValue>}
+ * @template T
+ * @template TValue
+ */
 export class DefaultsMap<T extends object, TValue = any> extends DefaultsArray<
   Map<T, TValue>,
   TValue

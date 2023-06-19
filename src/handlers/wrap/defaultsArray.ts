@@ -1,6 +1,6 @@
-import { isFunction, isUndefined } from '../helpers';
+import { isFunction, isUndefined } from '../../helpers';
 import type { TargetReceiver } from './interfaces';
-import type { Property } from '../interfaces';
+import type { Property } from '../../interfaces';
 import { Defaults } from './defaults';
 
 /**
@@ -13,13 +13,13 @@ import { Defaults } from './defaults';
  * @template TValue
  */
 export class DefaultsArray<T extends object, TValue = any> extends Defaults<T, TValue> {
-  get(target: T, event: Property, receiver?: T): TValue {
+  get(target: T, event: Property, receiver: T): TValue {
     const intendedTarget = this.getTarget({ target, receiver });
     const original = Reflect.get(target, event, receiver);
 
     return isFunction(original)
-      ? (this.handle.bind(this, intendedTarget, original) as any)
-      : super.get(target, event);
+      ? (this.handle.bind(this, intendedTarget, original) as TValue)
+      : super.get(target, event, receiver);
   }
 
   protected getTarget({ receiver }: TargetReceiver<T>): T {

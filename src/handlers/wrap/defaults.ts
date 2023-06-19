@@ -1,7 +1,12 @@
-import type { Property, IDefaults, IgnoreCriteria, IValueHandler } from '../interfaces';
-import { isUndefined, isUnwrapDefaults, isObject } from '../helpers';
-import type { OptionsContainer } from '../options';
-import { criteria } from '../configuration';
+import { isUndefined, isUnwrapDefaults, isObject } from '../../helpers';
+import type { OptionsContainer } from '../../options';
+import { criteria } from '../../configuration';
+import type {
+  Property,
+  IDefaults,
+  IValueHandler,
+  IgnoreCriteria,
+} from '../../interfaces';
 
 /**
  * @description Base handler for managing wrapped content
@@ -25,7 +30,7 @@ export class Defaults<T extends object = {}, TValue = any>
     return target;
   }
 
-  get(target: T, event: Property): TValue {
+  get(target: T, event: Property, _receiver: T): TValue {
     if (isUnwrapDefaults(event)) {
       return this.unwrapDefaults.bind(this, target) as any;
     }

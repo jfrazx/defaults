@@ -2,7 +2,7 @@ export type Default<WrappedObject extends object = {}> = WrappedObject &
   Unwrap<WrappedObject>;
 
 export interface IDefaults<WrappedObject, DefaultValue> {
-  get(target: WrappedObject, event: Property): DefaultValue;
+  get(target: WrappedObject, event: Property, receiver: WrappedObject): DefaultValue;
   set(target: WrappedObject, property: Property, value: DefaultValue): boolean;
   unwrapDefaults(target: WrappedObject): WrappedObject;
 }
