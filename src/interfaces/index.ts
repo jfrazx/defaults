@@ -32,7 +32,7 @@ export interface IgnoreCriteria<DefaultValue = any> {
 export type DefaultOptions<WrappedObject extends object = {}, DefaultValue = any> =
   | {
       /**
-       * The object or array which to supply default values
+       * @description The object or array which to supply default values
        *
        * @default {}
        */
@@ -42,36 +42,36 @@ export type DefaultOptions<WrappedObject extends object = {}, DefaultValue = any
 
 export interface IDefaultOptions<WrappedObject extends object, DefaultValue = any> {
   /**
-   * Function to determine if default value should be used. Returning a truthy value supplies the default
+   * @descFunction to determine if default value should be used. Returning a truthy value supplies the default
    *
    * @default () => false
    */
   setCriteria?: Criteria<WrappedObject, DefaultValue>;
 
   /**
-   * Set a default value if undefined
+   * @description Set a default value if undefined
    *
    * @default false
    */
   setUndefined?: boolean;
 
   /**
-   * If default is array or object, make a shallow copy when supplying the default
+   * @description If default is array or object, make a shallow copy when supplying the default
    *
    * @default true
    */
   shallowCopy?: boolean;
 
   /**
-   * If true and default value is a Map the key will be reused.
-   * If false and default value is a Map the key will be cloned using shallowCopy rules.
+   * @description If true and default value is a Map, the key will be reused.
+   * If false and default value is a Map, the key will be cloned using shallowCopy rules.
    *
    * @default true
    */
   reuseMapKey?: boolean;
 
   /**
-   * Indicates if non-primitive default values should be returned as-is
+   * @description Indicates if non-primitive default values should be returned as-is
    *
    * @default false
    * @type {boolean}
@@ -80,7 +80,7 @@ export interface IDefaultOptions<WrappedObject extends object, DefaultValue = an
   noCopy?: boolean;
 
   /**
-   * If true and default value is a function said function will be executed and the result returned
+   * @description If true and default value is a function said function will be executed and the result returned
    *
    * @default false
    * @type {boolean}
@@ -88,11 +88,20 @@ export interface IDefaultOptions<WrappedObject extends object, DefaultValue = an
    */
   execute?: boolean;
   /**
-   * The default value to be supplied
+   * @description The default value to be supplied
    *
    * @default undefined
    * */
   defaultValue?: DefaultValue;
+
+  /**
+   * @description Function to run after a default value has been set
+   *
+   * @default () => {}
+   *
+   * @memberof IDefaultOptions
+   */
+  runAfterSet?: (event: Property, value: DefaultValue, target: WrappedObject) => void;
 }
 
 export type DefaultGenerator<DefaultValue> = (key: Property) => DefaultValue;

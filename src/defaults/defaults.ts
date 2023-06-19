@@ -72,9 +72,16 @@ export class Defaults<T extends object = {}, TValue = any>
   }
 
   protected setIfNeeded(target: T, event: Property, wasUndefined: boolean): boolean {
-    return this.shouldSetUndefined(wasUndefined)
-      ? Reflect.set(target, event, this.value.supplyDefault(event))
-      : false;
+    return this.shouldSetUndefined(wasUndefined) ? this.setAndRun(target, event) : false;
+  }
+
+  protected setAndRun(target: T, event: Property): boolean {
+    const value = this.value.supplyDefault(event);
+    const didSet = Reflect.set(target, event, value);
+
+    this.options.runAfterSet(event, value, target);
+
+    return didSet;
   }
 
   protected shouldSetUndefined(wasUndefined: boolean): boolean {
