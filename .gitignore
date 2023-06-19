@@ -1,4 +1,3 @@
-
 *.map
 *.js
 *.log
@@ -9,11 +8,14 @@ logs
 *.lcov
 
 !examples/**/*
-dist/
 build/
+dist/
 
+build-examples/
+.parcel-cache/
 node_modules/
 .nyc_output/
 coverage/
+.yarn/
 
 */.DS_Store

@@ -1,4 +1,5 @@
 import { ValueHandlerRuleRunner } from '../../../rules';
+import type { Property } from '../../../interfaces';
 import { ValueHandler } from '../base';
 
 /**
@@ -14,7 +15,7 @@ export class MapValueHandler<T extends object, TValue> extends ValueHandler<
   T,
   Map<T, TValue>
 > {
-  supplyDefault() {
+  supplyDefault(event: Property) {
     const map = new Map<T, TValue>();
 
     for (const [key, value] of this.value.entries()) {
@@ -22,9 +23,9 @@ export class MapValueHandler<T extends object, TValue> extends ValueHandler<
         this.target,
         value,
         this.options,
-      ).supplyDefault();
+      ).supplyDefault(event);
 
-      const updatedKey = this.retrieveMapKey(key);
+      const updatedKey = this.retrieveMapKey(key, event);
 
       map.set(updatedKey, updatedValue);
     }
@@ -32,15 +33,13 @@ export class MapValueHandler<T extends object, TValue> extends ValueHandler<
     return map;
   }
 
-  private retrieveMapKey(key: T): T {
+  private retrieveMapKey(key: T, event: Property): T {
     const { reuseMapKey } = this.options;
 
     return reuseMapKey
       ? key
-      : ValueHandlerRuleRunner.for<T, any>(
-          this.target,
-          key,
-          this.options,
-        ).supplyDefault();
+      : ValueHandlerRuleRunner.for<T, any>(this.target, key, this.options).supplyDefault(
+          event,
+        );
   }
 }

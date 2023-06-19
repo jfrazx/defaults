@@ -95,10 +95,12 @@ export interface IDefaultOptions<WrappedObject extends object, DefaultValue = an
   defaultValue?: DefaultValue;
 }
 
+export type DefaultGenerator<DefaultValue> = (key: Property) => DefaultValue;
+
 export type ExecuteFunction<DefaultValue> =
   | {
       /**
-       * If true and default value is a function said function will be executed and the result returned
+       * If true and default value is a function, said function will be executed and the result returned
        *
        * @default false
        * @type {boolean}
@@ -110,11 +112,11 @@ export type ExecuteFunction<DefaultValue> =
        *
        * @default undefined
        * */
-      defaultValue: () => DefaultValue;
+      defaultValue: DefaultGenerator<DefaultValue>;
     }
   | {
       /**
-       * If true and default value is a function said function will be executed and the result returned
+       * If true and default value is a function, said function will be executed and the result returned
        *
        * @default false
        * @type {boolean}
@@ -130,5 +132,5 @@ export type ExecuteFunction<DefaultValue> =
     };
 
 export interface IValueHandler<DefaultValue> {
-  supplyDefault(): DefaultValue;
+  supplyDefault(event: Property): DefaultValue;
 }

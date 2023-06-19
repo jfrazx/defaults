@@ -13,26 +13,31 @@ import { Defaults } from './defaults';
  * @template TValue
  */
 export class DefaultsArray<T extends object, TValue = any> extends Defaults<T, TValue> {
-  get(target: T, event: Property, receiver: T): TValue {
-    const intendedTarget = this.getTarget({ target, receiver });
+  get(target: T, event: Property, receiver?: T): TValue {
+    const intendedTarget = this.getTarget({ target, receiver: receiver! });
     const original = Reflect.get(target, event, receiver);
 
     return isFunction(original)
-      ? (this.handle.bind(this, intendedTarget, original) as TValue)
-      : super.get(target, event, receiver);
+      ? (this.handle.bind(this, intendedTarget, event, original) as any)
+      : super.get(target, event, receiver!);
   }
 
   protected getTarget({ receiver }: TargetReceiver<T>): T {
     return receiver!;
   }
 
-  protected handle(target: T, original: Function, ...args: unknown[]): TValue {
+  protected handle(
+    target: T,
+    event: Property,
+    original: Function,
+    ...args: unknown[]
+  ): TValue {
     const result: any = original.apply(target, args);
 
-    return isUndefined(result) ? this.supplyDefaultAndSet(target, args) : result;
+    return isUndefined(result) ? this.supplyDefaultAndSet(target, event, args) : result;
   }
 
-  protected supplyDefaultAndSet(_target: T, _args: any[]) {
-    return this.value.supplyDefault();
+  protected supplyDefaultAndSet(_target: T, event: Property, _args: any[]): TValue {
+    return this.value.supplyDefault(event);
   }
 }

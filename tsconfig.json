@@ -11,8 +11,13 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "removeComments": true,
+    "esModuleInterop": true,
     "strictNullChecks": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "strictFunctionTypes": true,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src"],
   "exclude": ["test"]
