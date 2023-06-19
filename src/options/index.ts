@@ -3,6 +3,7 @@ import { criteria } from '../configuration';
 
 const defaultOptions: Required<IDefaultOptions<any>> = {
   defaultValue: undefined,
+  runAfterSet: () => {},
   setCriteria: criteria,
   setUndefined: false,
   reuseMapKey: true,

@@ -175,6 +175,7 @@ All options have default values.
 |   execute    |     false     | If true and `defaultValue` is a function it will be executed and the result returned. Receives property being accessed |
 |    noCopy    |     false     | Indicates if non-primitive default values should be returned as-is                                                     |
 | reuseMapKey  |     true      | If true and default value is a Map the key will be reused, otherwise shallowCopy rules apply                           |
+| runAfterSet  |   () => {}    | Function to run after a default value is set. `setUndefined` must be true                                              |
 
 ---
 
@@ -215,8 +216,9 @@ expect(prop in wrapped).to.be.false;
 import { wrapDefaults } from '@status/defaults';
 
 const charCount = wrapDefaults({
-  defaultValue: 0,
   setCriteria: (v) => v < 0,
+  setUndefined: true,
+  defaultValue: 0,
 });
 
 const sentence = 'something wicked this way comes';

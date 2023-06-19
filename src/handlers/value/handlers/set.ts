@@ -1,5 +1,5 @@
+import type { IValueHandler, Property } from '../../../interfaces';
 import { ValueHandlerRuleRunner } from '../../../rules';
-import type { Property } from '../../../interfaces';
 import { ValueHandler } from '../base';
 
 export class SetValueHandler<T extends object, TValue> extends ValueHandler<
@@ -7,10 +7,10 @@ export class SetValueHandler<T extends object, TValue> extends ValueHandler<
   Set<TValue>
 > {
   supplyDefault(event: Property) {
-    const set = new Set<TValue>();
+    const set: Set<TValue> = new Set<TValue>();
 
     this.value.forEach((value: TValue) => {
-      const handler = ValueHandlerRuleRunner.for<T, any>(
+      const handler: IValueHandler<TValue> = ValueHandlerRuleRunner.for<T, any>(
         this.target,
         value,
         this.options,
