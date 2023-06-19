@@ -17,16 +17,16 @@ export class MapValueHandler<T extends object, TValue> extends ValueHandler<
 > {
   supplyDefault(event: Property) {
     const { reuseMapKey } = this.options;
-    const map = new Map<T, TValue>();
+    const map: Map<T, TValue> = new Map<T, TValue>();
 
     for (const [key, value] of this.value.entries()) {
-      const updatedValue = ValueHandlerRuleRunner.for<T, any>(
+      const updatedValue: TValue = ValueHandlerRuleRunner.for<T, any>(
         this.target,
         value,
         this.options,
       ).supplyDefault(event);
 
-      const updatedKey = reuseMapKey
+      const updatedKey: any = reuseMapKey
         ? key
         : ValueHandlerRuleRunner.for<T, any>(
             this.target,

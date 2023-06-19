@@ -42,7 +42,7 @@ export type DefaultOptions<WrappedObject extends object = {}, DefaultValue = any
 
 export interface IDefaultOptions<WrappedObject extends object, DefaultValue = any> {
   /**
-   * @descFunction to determine if default value should be used. Returning a truthy value supplies the default
+   * @description Function to determine if default value should be used. Returning a truthy value supplies the default
    *
    * @default () => false
    */

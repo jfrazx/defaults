@@ -38,7 +38,7 @@ export class Defaults<T extends object = {}, TValue = any>
   set(target: T, property: Property, value: TValue) {
     const { criteria, setValue } = this.determineCriteria(target, property, value);
 
-    const useValue = criteria.call(target, setValue, property, target)
+    const useValue: TValue = criteria.call(target, setValue, property, target)
       ? this.value.supplyDefault(property)
       : setValue;
 
@@ -47,7 +47,7 @@ export class Defaults<T extends object = {}, TValue = any>
 
   protected determineCriteria(target: T, property: Property, value: TValue) {
     const { criteria: setCriteria, setValue } = this.useCriteria(value);
-    const isProtoProp = this.isPrototypeProperty(target, property);
+    const isProtoProp: boolean = this.isPrototypeProperty(target, property);
 
     return {
       criteria: isProtoProp ? criteria : setCriteria,
@@ -60,10 +60,10 @@ export class Defaults<T extends object = {}, TValue = any>
   }
 
   protected useValue(target: T, event: Property) {
-    const value = Reflect.get(target, event);
-    const wasUndefined = isUndefined(value);
-    const didSet = this.setIfNeeded(target, event, wasUndefined);
-    const useDefault = wasUndefined && !didSet;
+    const value: TValue = Reflect.get(target, event) as TValue;
+    const wasUndefined: boolean = isUndefined(value);
+    const didSet: boolean = this.setIfNeeded(target, event, wasUndefined);
+    const useDefault: boolean = wasUndefined && !didSet;
 
     return {
       useDefault,
@@ -76,8 +76,8 @@ export class Defaults<T extends object = {}, TValue = any>
   }
 
   protected setAndRun(target: T, event: Property): boolean {
-    const value = this.value.supplyDefault(event);
-    const didSet = Reflect.set(target, event, value);
+    const value: TValue = this.value.supplyDefault(event);
+    const didSet: boolean = Reflect.set(target, event, value);
 
     this.options.runAfterSet(event, value, target);
 
@@ -89,8 +89,8 @@ export class Defaults<T extends object = {}, TValue = any>
   }
 
   protected useCriteria(value: TValue | IgnoreCriteria<TValue>) {
-    let setValue = value as TValue;
-    let ignore = false;
+    let setValue: TValue = value as TValue;
+    let ignore: boolean = false;
 
     if (this.shouldIgnore(value)) {
       setValue = value.value;
