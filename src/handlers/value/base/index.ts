@@ -6,7 +6,7 @@ export abstract class ValueHandler<T extends object, TValue>
 {
   constructor(
     protected readonly target: T,
-    protected readonly value: TValue,
+    public readonly value: TValue,
     protected readonly options: OptionsContainer<T, TValue>,
   ) {}
 

@@ -3,7 +3,7 @@ import type { Property } from '../../../interfaces';
 import { ValueHandler } from '../base';
 
 /**
- * @description Map value handler operators on
+ * @description Map value handler for managing map content
  *
  * @export
  * @class MapValueHandler
@@ -16,17 +16,16 @@ export class MapValueHandler<T extends object, TValue> extends ValueHandler<
   Map<T, TValue>
 > {
   supplyDefault(event: Property) {
-    const map = new Map<T, TValue>();
+    const map: Map<T, TValue> = new Map<T, TValue>();
 
     for (const [key, value] of this.value.entries()) {
-      const updatedValue = ValueHandlerRuleRunner.for<T, any>(
+      const updatedValue: TValue = ValueHandlerRuleRunner.for<T, any>(
         this.target,
         value,
         this.options,
       ).supplyDefault(event);
 
       const updatedKey = this.retrieveMapKey(key, event);
-
       map.set(updatedKey, updatedValue);
     }
 
@@ -34,9 +33,7 @@ export class MapValueHandler<T extends object, TValue> extends ValueHandler<
   }
 
   private retrieveMapKey(key: T, event: Property): T {
-    const { reuseMapKey } = this.options;
-
-    return reuseMapKey
+    return this.options.reuseMapKey
       ? key
       : ValueHandlerRuleRunner.for<T, any>(this.target, key, this.options).supplyDefault(
           event,

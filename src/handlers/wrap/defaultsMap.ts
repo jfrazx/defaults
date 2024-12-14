@@ -1,6 +1,6 @@
 import type { TargetReceiver } from './interfaces';
+import type { Property } from '../../interfaces';
 import { DefaultsArray } from './defaultsArray';
-import type { Property } from '../interfaces';
 
 /**
  * @description Handler for wrapped Maps

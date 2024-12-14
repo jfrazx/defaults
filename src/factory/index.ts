@@ -1,20 +1,26 @@
-import type { DefaultOptions, Default, IDefaults, IDefaultOptions } from '../interfaces';
 import type { DefaultRuleConstruct, ShouldHandle } from '../rules/interfaces';
 import { ValueHandlerRuleRunner, getDefaultsRules } from '../rules';
 import { OptionsContainer } from '../options';
+import type {
+  Default,
+  IDefaults,
+  IValueHandler,
+  DefaultOptions,
+  IDefaultOptions,
+} from '../interfaces';
 
 export abstract class DefaultsFactory {
   static for<T extends object, TValue>({
     wrap,
     ...options
   }: DefaultOptions<T, TValue>): Default<T> {
-    const optionsContainer = new OptionsContainer<T, TValue>(
+    const optionsContainer: OptionsContainer<T, TValue> = new OptionsContainer<T, TValue>(
       options as IDefaultOptions<T, TValue>,
     );
-    const useWrap = wrap || (Object.create(null) as T);
+    const useWrap: T = wrap || (Object.create(null) as T);
     const { defaultValue } = options;
 
-    const valueHandler = ValueHandlerRuleRunner.for<T, TValue>(
+    const valueHandler: IValueHandler<TValue> = ValueHandlerRuleRunner.for<T, TValue>(
       useWrap,
       defaultValue as TValue,
       optionsContainer,

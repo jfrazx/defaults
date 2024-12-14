@@ -25,23 +25,31 @@ describe('Set', () => {
       setUndefined: true,
     });
 
-    expect(wrapped).to.be.instanceOf(Set);
+    expect(wrapped.has(7)).to.be.false;
+    expect(wrapped.size).to.equal(0);
 
-    expect(wrapped.has(9)).to.be.false;
+    wrapped.add(<any>undefined);
+
+    expect(wrapped.has(7)).to.be.true;
+    expect(wrapped.size).to.equal(1);
+    expect(wrapped.has(<any>undefined)).to.be.false;
   });
 
-  it(`should not set array values when undefined`, () => {
-    const set = new Set<Array<Object>>();
+  it('should use setCriteria', () => {
+    const set = new Set<number>();
 
     const wrapped = wrapDefaults({
       wrap: set,
-      defaultValue: [],
-      setUndefined: true,
+      defaultValue: 4,
+      setCriteria: (v) => v > 10,
     });
 
-    const arr = [];
+    wrapped.add(11);
+    wrapped.add(-9);
 
-    expect(wrapped.has(arr)).to.be.false;
-    expect(wrapped.has(arr)).to.be.false;
+    expect(wrapped.has(4)).to.be.true;
+    expect(wrapped.has(11)).to.be.false;
+    expect(wrapped.has(-9)).to.be.true;
+    expect(wrapped.size).to.equal(2);
   });
 });

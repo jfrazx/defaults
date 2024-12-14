@@ -1,5 +1,6 @@
 import { wrapDefaults } from '../src';
 import { expect } from 'chai';
+import sinon from 'sinon';
 
 describe('Defaults', () => {
   describe('defaultValue', () => {
@@ -10,7 +11,7 @@ describe('Defaults', () => {
       expect(d.value).to.be.undefined;
     });
 
-    it('should should allow user defined defaults', () => {
+    it('should allow user defined defaults', () => {
       let d: any = wrapDefaults({ defaultValue: 10 });
       expect(d.value).to.equal(10);
 
@@ -247,6 +248,76 @@ describe('Defaults', () => {
       expect(wrapped.something).to.be.an('array');
       expect(wrapped.anything).to.equal(myA);
       expect(wrapped.more[0]).to.equal(myA[0]);
+    });
+  });
+
+  describe(`runAfterSet`, () => {
+    it(`should run the callback after a value is set`, () => {
+      const stub = sinon.stub();
+      let counter = 0;
+
+      const d = wrapDefaults<{ [key: string]: string }, string>({
+        defaultValue: () => ++counter + '',
+        setUndefined: true,
+        runAfterSet: stub,
+        execute: true,
+      });
+
+      expect(d.value).to.equal('1');
+      expect(stub.callCount).to.equal(1);
+
+      d.value = '2';
+
+      expect(d.value).to.equal('2');
+      expect(stub.callCount).to.equal(1);
+
+      expect(d.value2).to.equal('2');
+      expect(stub.callCount).to.equal(2);
+    });
+
+    it(`should not run with direct assignment`, () => {
+      const stub = sinon.stub();
+      let counter = 0;
+
+      const d = wrapDefaults<{ [key: string]: string }, string>({
+        defaultValue: () => ++counter + '',
+        setUndefined: true,
+        runAfterSet: stub,
+        execute: true,
+      });
+
+      d.value = '7';
+
+      expect(d.value).to.equal('7');
+      expect(stub.callCount).to.equal(0);
+
+      d.value2 = '9';
+
+      expect(d.value2).to.equal('9');
+      expect(stub.callCount).to.equal(0);
+    });
+
+    it(`should not run when setUndefined is false`, () => {
+      const stub = sinon.stub();
+      let counter = 0;
+
+      const d = wrapDefaults<{ [key: string]: string }, string>({
+        defaultValue: () => ++counter + '',
+        setUndefined: false,
+        runAfterSet: stub,
+        execute: true,
+      });
+
+      expect(d.value).to.equal('1');
+      expect(stub.callCount).to.equal(0);
+
+      d.value = '2';
+
+      expect(d.value).to.equal('2');
+      expect(stub.callCount).to.equal(0);
+
+      expect(d.value2).to.equal('2');
+      expect(stub.callCount).to.equal(0);
     });
   });
 });
