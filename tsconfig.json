@@ -2,7 +2,7 @@
   "compilerOptions": {
     "strict": true,
     "sourceMap": true,
-    "target": "es2017",
+    "target": "ESNext",
     "outDir": "./build",
     "declaration": true,
     "module": "commonjs",

@@ -2,8 +2,7 @@ import { Methods } from '../enums';
 
 export const isUnwrapDefaults = (value: unknown): boolean => value === Methods.Unwrap;
 
-export const isObjectOrArray = (value: unknown): boolean =>
-  isObject(value) || Array.isArray(value);
+export const isObjectOrArray = (value: unknown): boolean => isObject(value) || Array.isArray(value);
 
 export const isObject = (value: unknown): value is object =>
   Boolean(value) && Array.isArray(value) === false && is(value, 'object');

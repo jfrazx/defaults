@@ -81,7 +81,7 @@ describe('Arrays', () => {
 
   it('should handle unshift', () => {
     const a = wrapDefaults({
-      wrap: [1, 2, 3, 4, 5],
+      wrap: [1, 2, 3, 4, 9],
       defaultValue: 4,
       setCriteria: (v) => v > 10,
     });

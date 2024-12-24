@@ -17,23 +17,21 @@ export abstract class DefaultsFactory {
     const optionsContainer: OptionsContainer<T, TValue> = new OptionsContainer<T, TValue>(
       options as IDefaultOptions<T, TValue>,
     );
-    const useWrap: T = wrap || (Object.create(null) as T);
-    const { defaultValue } = options;
+    const target: T = wrap || (Object.create(null) as T);
 
     const valueHandler: IValueHandler<TValue> = ValueHandlerRuleRunner.for<T, TValue>(
-      useWrap,
-      defaultValue as TValue,
+      target,
+      options.defaultValue as TValue,
       optionsContainer,
     );
 
     const handler: IDefaults<T, TValue> = getDefaultsRules<T, TValue>()
       .map(
-        (Rule: DefaultRuleConstruct<T, TValue>) =>
-          new Rule(useWrap, optionsContainer, valueHandler),
+        (Rule: DefaultRuleConstruct<T, TValue>) => new Rule(target, optionsContainer, valueHandler),
       )
       .find((rule: ShouldHandle<IDefaults<T, TValue>>) => rule.shouldHandle())!
       .handle();
 
-    return new Proxy(useWrap, handler) as Default<T>;
+    return new Proxy(target, handler) as Default<T>;
   }
 }

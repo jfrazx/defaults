@@ -2,10 +2,7 @@ import type { IValueHandler, Property } from '../../../interfaces';
 import { ValueHandlerRuleRunner } from '../../../rules';
 import { ValueHandler } from '../base';
 
-export class SetValueHandler<T extends object, TValue> extends ValueHandler<
-  T,
-  Set<TValue>
-> {
+export class SetValueHandler<T extends object, TValue> extends ValueHandler<T, Set<TValue>> {
   supplyDefault(event: Property) {
     const set: Set<TValue> = new Set<TValue>();
 
