@@ -12,7 +12,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "precompile": "rimraf dist",
+    "precompile": "rimraf build",
     "compile": "tsc",
     "build": "rimraf dist && parcel build",
     "watch": "parcel watch",

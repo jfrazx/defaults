@@ -21,6 +21,7 @@
     "src/factory/index.ts",
     "src/defaults/index.ts",
     "src/handlers/index.ts",
+    "src/handlers/wrap/index.ts",
     "src/rules/defaults/index.ts",
     "src/handlers/value/index.ts",
     "src/handlers/value/handlers/index.ts"

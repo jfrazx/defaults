@@ -1,5 +1,5 @@
 import type { IDefaults } from '../../../interfaces';
-import { DefaultsMap } from '../../../defaults';
+import { DefaultsMap } from '../../../handlers';
 import { DefaultRule } from '../base';
 
 export class MapRule<T extends object, TValue> extends DefaultRule<Map<T, TValue>, TValue> {

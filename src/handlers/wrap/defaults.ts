@@ -1,7 +1,7 @@
-import type { Property, IDefaults, IgnoreCriteria, IValueHandler } from '../interfaces';
-import { isUndefined, isUnwrapDefaults, isObject } from '../helpers';
-import type { OptionsContainer } from '../options';
-import { criteria } from '../configuration';
+import { isUndefined, isUnwrapDefaults, isObject } from '../../helpers';
+import type { OptionsContainer } from '../../options';
+import { criteria } from '../../configuration';
+import type { Property, IDefaults, IValueHandler, IgnoreCriteria } from '../../interfaces';
 
 /**
  * @description Base handler for managing wrapped content
@@ -25,7 +25,8 @@ export class Defaults<T extends object = Record<string, any>, TValue = any>
     return target;
   }
 
-  get(target: T, event: Property): TValue {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  get(target: T, event: Property, _receiver: T): TValue {
     if (isUnwrapDefaults(event)) {
       return this.unwrapDefaults.bind(this, target) as TValue;
     }
@@ -83,18 +84,20 @@ export class Defaults<T extends object = Record<string, any>, TValue = any>
   }
 
   protected useCriteria(value: TValue | IgnoreCriteria<TValue>) {
-    let setValue = value as TValue;
-    let ignore = false;
-
-    if (this.shouldIgnore(value)) {
-      setValue = value.value;
-      ignore = value.ignoreDefaultCriteria;
+    if (this.isIgnoreCriteria(value)) {
+      return {
+        criteria,
+        setValue: value.value,
+      };
     }
 
-    return { criteria: ignore ? criteria : this.options.setCriteria, setValue };
+    return {
+      criteria: this.options.setCriteria,
+      setValue: value,
+    };
   }
 
-  protected shouldIgnore(value: any): value is IgnoreCriteria {
+  protected isIgnoreCriteria(value: any): value is IgnoreCriteria {
     return isObject(value) && (value as IgnoreCriteria).ignoreDefaultCriteria !== undefined;
   }
 }

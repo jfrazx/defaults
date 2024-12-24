@@ -1,8 +1,15 @@
 {
   "version": "0.2",
   "language": "en",
-  "ignorePaths": ["node_modules", "dist", "coverage", "docs", "public"],
+  "ignorePaths": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "docs",
+    "public"
+  ],
   "words": [
+    "automerge",
     "codecov",
     "deregisters",
     "esnext",

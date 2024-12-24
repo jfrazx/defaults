@@ -2,7 +2,7 @@ export type Default<WrappedObject extends object = Record<string, any>> = Wrappe
   Unwrap<WrappedObject>;
 
 export interface IDefaults<WrappedObject, DefaultValue> {
-  get(target: WrappedObject, event: Property): DefaultValue;
+  get(target: WrappedObject, event: Property, receiver: WrappedObject): DefaultValue;
   set(target: WrappedObject, property: Property, value: DefaultValue): boolean;
   unwrapDefaults(target: WrappedObject): WrappedObject;
 }
@@ -142,5 +142,6 @@ export type ExecuteFunction<DefaultValue> =
     };
 
 export interface IValueHandler<DefaultValue> {
+  value: DefaultValue;
   supplyDefault(event: Property): DefaultValue;
 }

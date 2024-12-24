@@ -1,6 +1,6 @@
-import { isFunction, isUndefined } from '../helpers';
+import { isFunction, isUndefined } from '../../helpers';
 import type { TargetReceiver } from './interfaces';
-import type { Property } from '../interfaces';
+import type { Property } from '../../interfaces';
 import { Defaults } from './defaults';
 
 /**
@@ -19,7 +19,7 @@ export class DefaultsArray<T extends object, TValue = any> extends Defaults<T, T
 
     return isFunction(original)
       ? (this.handle.bind(this, intendedTarget, event, original) as TValue)
-      : super.get(target, event);
+      : super.get(target, event, receiver!);
   }
 
   protected getTarget({ receiver }: TargetReceiver<T>): T {
