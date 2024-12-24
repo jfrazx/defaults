@@ -11,19 +11,12 @@ import { DefaultsArray } from './defaultsArray';
  * @template T
  * @template TValue
  */
-export class DefaultsMap<T extends object, TValue = any> extends DefaultsArray<
-  Map<T, TValue>,
-  TValue
-> {
+export class DefaultsMap<T extends object, TValue = any> extends DefaultsArray<Map<T, TValue>, TValue> {
   protected getTarget({ target }: TargetReceiver<Map<T, TValue>>): Map<T, TValue> {
     return target;
   }
 
-  protected supplyDefaultAndSet(
-    target: Map<T, TValue>,
-    event: Property,
-    [key]: any[],
-  ): TValue {
+  protected supplyDefaultAndSet(target: Map<T, TValue>, event: Property, [key]: any[]): TValue {
     const value: TValue = this.value.supplyDefault(event);
 
     if (this.shouldSetUndefined(true)) {

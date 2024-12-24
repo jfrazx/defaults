@@ -4,9 +4,6 @@ import { ArrayRule } from './array.rule';
 import { MapRule } from './map.rule';
 import { SetRule } from './set.rule';
 
-export const getDefaultsRules = <T extends object, TValue>(): DefaultRuleConstruct<
-  T,
-  TValue
->[] => {
+export const getDefaultsRules = <T extends object, TValue>(): DefaultRuleConstruct<T, TValue>[] => {
   return [ArrayRule, MapRule, SetRule, DefaultsRule] as any;
 };

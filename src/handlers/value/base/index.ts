@@ -1,9 +1,7 @@
 import type { IValueHandler, Property } from '../../../interfaces';
 import type { OptionsContainer } from '../../../options';
 
-export abstract class ValueHandler<T extends object, TValue>
-  implements IValueHandler<TValue>
-{
+export abstract class ValueHandler<T extends object, TValue> implements IValueHandler<TValue> {
   constructor(
     protected readonly target: T,
     public readonly value: TValue,

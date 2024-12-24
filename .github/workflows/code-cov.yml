@@ -1,8 +1,9 @@
-name: Tests
+name: Codecov
 
 on:
   push:
     branches: [master, develop]
+
   pull_request:
     branches: [master, develop]
 
@@ -12,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x, 22.x, 24.x]
+        node-version: [22.4.1]
 
     steps:
       - uses: actions/checkout@v4
@@ -23,4 +24,13 @@ jobs:
           cache: 'npm'
       - run: |
           npm ci --ignore-scripts
-          npm test
+          npm run coverage:report
+      - name: Codecov
+        uses: codecov/codecov-action@v4.5.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.lcov
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
+          verbose: true

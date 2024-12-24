@@ -1,4 +1,4 @@
-export type Default<WrappedObject extends object = {}> = WrappedObject &
+export type Default<WrappedObject extends object = Record<string, any>> = WrappedObject &
   Unwrap<WrappedObject>;
 
 export interface IDefaults<WrappedObject, DefaultValue> {
@@ -29,7 +29,7 @@ export interface IgnoreCriteria<DefaultValue = any> {
   value: DefaultValue;
 }
 
-export type DefaultOptions<WrappedObject extends object = {}, DefaultValue = any> = {
+export type DefaultOptions<WrappedObject extends object = Record<string, any>, DefaultValue = any> = {
   /**
    * @description The object or array which to supply default values
    *
@@ -115,6 +115,7 @@ export type ExecuteFunction<DefaultValue> =
        * @memberof IDefaultOptions
        */
       execute: true;
+
       /**
        * The default value to be supplied
        *
@@ -131,6 +132,7 @@ export type ExecuteFunction<DefaultValue> =
        * @memberof IDefaultOptions
        */
       execute?: false | undefined;
+
       /**
        * The default value to be supplied
        *

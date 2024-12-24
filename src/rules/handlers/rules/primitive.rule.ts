@@ -14,8 +14,8 @@ export class PrimitiveHandlerRule<T extends object> extends ValueHandlerRule<
   string | number | symbol | boolean | Function
 > {
   shouldHandle(): boolean {
-    return [isBoolean, isNumber, isString, isSymbol, isFunction, isUndefinedOrNull].some(
-      (is) => is(this.value),
+    return [isBoolean, isNumber, isString, isSymbol, isFunction, isUndefinedOrNull].some((is) =>
+      is(this.value),
     );
   }
 

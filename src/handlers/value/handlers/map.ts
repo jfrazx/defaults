@@ -11,10 +11,7 @@ import { ValueHandler } from '../base';
  * @template T
  * @template TValue
  */
-export class MapValueHandler<T extends object, TValue> extends ValueHandler<
-  T,
-  Map<T, TValue>
-> {
+export class MapValueHandler<T extends object, TValue> extends ValueHandler<T, Map<T, TValue>> {
   supplyDefault(event: Property) {
     const map: Map<T, TValue> = new Map<T, TValue>();
 
@@ -35,8 +32,6 @@ export class MapValueHandler<T extends object, TValue> extends ValueHandler<
   private retrieveMapKey(key: T, event: Property): T {
     return this.options.reuseMapKey
       ? key
-      : ValueHandlerRuleRunner.for<T, any>(this.target, key, this.options).supplyDefault(
-          event,
-        );
+      : ValueHandlerRuleRunner.for<T, any>(this.target, key, this.options).supplyDefault(event);
   }
 }

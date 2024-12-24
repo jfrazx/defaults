@@ -3,9 +3,13 @@
     {
       "files": ".prettierrc",
       "options": { "parser": "json" }
+    },
+    {
+      "files": ".eslintrc",
+      "options": { "trailingComma": "none" }
     }
   ],
-  "printWidth": 90,
+  "printWidth": 110,
   "singleQuote": true,
   "bracketSpacing": true,
   "trailingComma": "all"

@@ -2,10 +2,7 @@ import type { IDefaults } from '../../../interfaces';
 import { DefaultsMap } from '../../../handlers';
 import { DefaultRule } from '../base';
 
-export class MapRule<T extends object, TValue> extends DefaultRule<
-  Map<T, TValue>,
-  TValue
-> {
+export class MapRule<T extends object, TValue> extends DefaultRule<Map<T, TValue>, TValue> {
   shouldHandle(): boolean {
     return this.wrap instanceof Map;
   }

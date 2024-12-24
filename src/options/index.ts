@@ -12,10 +12,15 @@ const defaultOptions: Required<IDefaultOptions<any>> = {
   noCopy: false,
 };
 
+// avoiding declaring options on the class with no initializer
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface OptionsContainer<T extends object, TValue = any>
   extends Required<IDefaultOptions<T, TValue>> {}
 
-export class OptionsContainer<T extends object, TValue = any> {
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export class OptionsContainer<T extends object, TValue = any>
+  implements Required<IDefaultOptions<T, TValue>>
+{
   constructor(readonly combinedOptions: IDefaultOptions<T, TValue>) {
     const options = this.mergeOptions(combinedOptions);
 
@@ -27,9 +32,7 @@ export class OptionsContainer<T extends object, TValue = any> {
     });
   }
 
-  private mergeOptions(
-    options: IDefaultOptions<T, TValue>,
-  ): Required<IDefaultOptions<T, TValue>> {
+  private mergeOptions(options: IDefaultOptions<T, TValue>): Required<IDefaultOptions<T, TValue>> {
     return { ...defaultOptions, ...options };
   }
 }
