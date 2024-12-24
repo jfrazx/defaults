@@ -26,19 +26,12 @@ export class DefaultsArray<T extends object, TValue = any> extends Defaults<T, T
     return receiver!;
   }
 
-  protected handle(
-    target: T,
-    event: Property,
-    original: Function,
-    ...args: unknown[]
-  ): TValue {
+  protected handle(target: T, event: Property, original: Function, ...args: unknown[]): TValue {
     const result: unknown = original.apply(target, args);
-
-    return isUndefined(result)
-      ? this.supplyDefaultAndSet(target, event, args)
-      : (result as TValue);
+    return isUndefined(result) ? this.supplyDefaultAndSet(target, event, args) : (result as TValue);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- class is extended and args are used
   protected supplyDefaultAndSet(_target: T, event: Property, _args: any[]): TValue {
     return this.value.supplyDefault(event);
   }

@@ -1,0 +1,25 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "ignorePaths": ["node_modules", "dist", "coverage", "docs", "public"],
+  "words": [
+    "codecov",
+    "deregisters",
+    "esnext",
+    "jfrazx",
+    "klass",
+    "lcov",
+    "precoverage",
+    "prettierrc",
+    "proxied",
+    "sloc",
+    "unittests"
+  ],
+  "ignoreRegExpList": [
+    "/\"(pre|post)[a-zA-Z]+\":/",
+    "from '(@|\\./)?[/a-zA-Z0-9]+'",
+    "/\"name\": \"[a-zA-Z]+\"/",
+    "/\"@?[a-zA-Z0-9]+(/[a-zA-Z0-9]+)?\": \"\\^?[\\d+\\.]+\"/",
+    "/YY[YMD hms]+/"
+  ]
+}

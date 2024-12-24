@@ -1,8 +1,10 @@
 import type { DefaultOptions } from './interfaces';
 import { DefaultsFactory } from './factory';
 
-export const wrapDefaults = <T extends object = {}, TValue = any>(
+export function wrapDefaults<T extends object = Record<string, any>, TValue = any>(
   defaultOptions: DefaultOptions<T, TValue> = {},
-) => DefaultsFactory.for(defaultOptions);
+) {
+  return DefaultsFactory.for(defaultOptions);
+}
 
-export { Default, Criteria, DefaultOptions, IgnoreCriteria } from './interfaces';
+export type { Default, Criteria, DefaultOptions, IgnoreCriteria } from './interfaces';
