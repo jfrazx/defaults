@@ -8,6 +8,7 @@ tslint.json
 .eslintrc
 .editorconfig
 renovate.json
+.parcelrc
 .travis.yml
 .prettierrc
 .releaserc
