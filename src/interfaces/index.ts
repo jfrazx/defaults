@@ -146,4 +146,4 @@ export interface IValueHandler<DefaultValue> {
   supplyDefault(event: Property): DefaultValue;
 }
 
-export type MappedType<K, V> = Map<K, V> | WeakMap<K extends object ? K : never, V>;
+export type MappedType<K, V> = K extends object ? Map<K, V> | WeakMap<K, V> : Map<K, V>;

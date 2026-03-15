@@ -7,7 +7,7 @@ import { DefaultsArray } from './defaultsArray';
  *
  * @export
  * @class DefaultsMap
- * @extends {DefaultsArray<Map<T, TValue>, TValue>}
+ * @extends {DefaultsArray<MappedType<T, TValue>, TValue>}
  * @template T
  * @template TValue
  */
