@@ -1,19 +1,10 @@
 import type { DefaultRuleConstruct, ShouldHandle } from '../rules/interfaces';
 import { ValueHandlerRuleRunner, getDefaultsRules } from '../rules';
 import { OptionsContainer } from '../options';
-import type {
-  Default,
-  IDefaults,
-  IValueHandler,
-  DefaultOptions,
-  IDefaultOptions,
-} from '../interfaces';
+import type { Default, IDefaults, IValueHandler, DefaultOptions, IDefaultOptions } from '../interfaces';
 
 export abstract class DefaultsFactory {
-  static for<T extends object, TValue>({
-    wrap,
-    ...options
-  }: DefaultOptions<T, TValue>): Default<T> {
+  static for<T extends object, TValue>({ wrap, ...options }: DefaultOptions<T, TValue>): Default<T> {
     const optionsContainer: OptionsContainer<T, TValue> = new OptionsContainer<T, TValue>(
       options as IDefaultOptions<T, TValue>,
     );
@@ -26,9 +17,7 @@ export abstract class DefaultsFactory {
     );
 
     const handler: IDefaults<T, TValue> = getDefaultsRules<T, TValue>()
-      .map(
-        (Rule: DefaultRuleConstruct<T, TValue>) => new Rule(target, optionsContainer, valueHandler),
-      )
+      .map((Rule: DefaultRuleConstruct<T, TValue>) => new Rule(target, optionsContainer, valueHandler))
       .find((rule: ShouldHandle<IDefaults<T, TValue>>) => rule.shouldHandle())!
       .handle();
 

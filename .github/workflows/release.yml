@@ -2,35 +2,35 @@ name: Release
 
 on:
   workflow_run:
-    workflows: ['Snyk Security Check', 'Test']
+    workflows: ['Tests']
     branches: [master]
     types:
       - completed
+
+permissions:
+  packages: write
+  contents: write
+  id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    permissions:
-      packages: write
-      contents: write
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22.22.0
+          node-version: 24.14.0
 
       - name: Install dependencies
-        run: npm i --ignore-scripts
+        run: npm ci --ignore-scripts
 
       - name: Release
-        run: npx semantic-release -b master -p @semantic-release/commit-analyzer -p @semantic-release/release-notes-generator -p @semantic-release/npm -p @semantic-release/github
+        run: npx semantic-release -b master -p @semantic-release/commit-analyzer -p @semantic-release/github -p @semantic-release/release-notes-generator -p @semantic-release/npm
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
